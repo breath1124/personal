@@ -1,0 +1,14 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const base = import.meta.env.BASE_URL;
+---
+
+<BaseLayout title="页面不存在" noindex>
+  <h1>404</h1>
+  <p>你访问的页面不存在。</p>
+  <p>
+    <a href={base}>返回首页 →</a>
+  </p>
+</BaseLayout>
+

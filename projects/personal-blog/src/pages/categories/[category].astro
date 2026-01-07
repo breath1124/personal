@@ -1,0 +1,60 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { formatDate } from "../../utils/date";
+import { toUrlSlug } from "../../utils/slug";
+import { getCategories } from "../../utils/taxonomy";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog", ({ data }) => !data.draft);
+  const categories = new Set<string>();
+  for (const post of posts) {
+    for (const category of getCategories(post.data)) {
+      categories.add(category);
+    }
+  }
+
+  return [...categories].map((category) => ({
+    params: { category: toUrlSlug(category) },
+    props: { category }
+  }));
+}
+
+const base = import.meta.env.BASE_URL;
+const { category } = Astro.props as { category: string };
+
+const posts = (await getCollection("blog", ({ data }) => !data.draft))
+  .filter((post) => getCategories(post.data).includes(category))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+function postHref(post: CollectionEntry<"blog">) {
+  return `${base}blog/${post.slug}/`;
+}
+---
+
+<BaseLayout title={`分类：${category}`}>
+  <h1>分类：{category}</h1>
+  <p class="meta">
+    <a href={`${base}categories/`}>← 返回分类</a>
+  </p>
+
+  <ul class="post-list" style="margin-top: 1rem">
+    {
+      posts.map((post) => (
+        <li class="post-item">
+          <h3>
+            <a href={postHref(post)}>{post.data.title}</a>
+          </h3>
+          <div class="meta">
+            <time datetime={post.data.pubDate.toISOString()}>
+              {formatDate(post.data.pubDate)}
+            </time>
+          </div>
+          <p>{post.data.description}</p>
+        </li>
+      ))
+    }
+  </ul>
+</BaseLayout>
+

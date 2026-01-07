@@ -1,0 +1,60 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { formatDate } from "../../utils/date";
+import { toUrlSlug } from "../../utils/slug";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog", ({ data }) => !data.draft);
+  const tags = new Set<string>();
+  for (const post of posts) {
+    for (const rawTag of post.data.tags ?? []) {
+      const tag = rawTag.trim();
+      if (tag) tags.add(tag);
+    }
+  }
+
+  return [...tags].map((tag) => ({
+    params: { tag: toUrlSlug(tag) },
+    props: { tag }
+  }));
+}
+
+const base = import.meta.env.BASE_URL;
+const { tag } = Astro.props as { tag: string };
+
+const posts = (await getCollection("blog", ({ data }) => !data.draft))
+  .filter((post) => (post.data.tags ?? []).some((t) => t.trim() === tag))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+function postHref(post: CollectionEntry<"blog">) {
+  return `${base}blog/${post.slug}/`;
+}
+---
+
+<BaseLayout title={`标签：${tag}`}>
+  <h1>标签：{tag}</h1>
+  <p class="meta">
+    <a href={`${base}tags/`}>← 返回标签</a>
+  </p>
+
+  <ul class="post-list" style="margin-top: 1rem">
+    {
+      posts.map((post) => (
+        <li class="post-item">
+          <h3>
+            <a href={postHref(post)}>{post.data.title}</a>
+          </h3>
+          <div class="meta">
+            <time datetime={post.data.pubDate.toISOString()}>
+              {formatDate(post.data.pubDate)}
+            </time>
+          </div>
+          <p>{post.data.description}</p>
+        </li>
+      ))
+    }
+  </ul>
+</BaseLayout>
+

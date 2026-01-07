@@ -1,0 +1,18 @@
+---
+import { NAV, SITE } from "../config/site";
+
+const base = import.meta.env.BASE_URL;
+---
+
+<header class="site-header">
+  <a class="brand" href={base}>{SITE.title}</a>
+  <nav class="nav" aria-label="主导航">
+    {
+      NAV.map((item) => (
+        <a href={`${base}${item.href.replace(/^\//, "")}`}>{item.label}</a>
+      ))
+    }
+    <a href={`${base}rss.xml`}>RSS</a>
+  </nav>
+</header>
+

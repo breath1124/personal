@@ -1,0 +1,62 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { formatDate } from "../../utils/date";
+import Giscus from "../../components/Giscus.astro";
+import { toUrlSlug } from "../../utils/slug";
+import { getCategories } from "../../utils/taxonomy";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog", ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post }
+  }));
+}
+
+const { post } = Astro.props as { post: CollectionEntry<"blog"> };
+const { Content } = await post.render();
+const base = import.meta.env.BASE_URL;
+const categories = getCategories(post.data);
+const tags = (post.data.tags ?? []).map((t) => t.trim()).filter(Boolean);
+---
+
+<BaseLayout title={post.data.title} description={post.data.description}>
+  <article>
+    <header>
+      <h1>{post.data.title}</h1>
+      <div class="meta">
+        <time datetime={post.data.pubDate.toISOString()}>
+          {formatDate(post.data.pubDate)}
+        </time>
+        {
+          post.data.updatedDate && (
+            <span>
+              {" · 更新于 "}
+              <time datetime={post.data.updatedDate.toISOString()}>
+                {formatDate(post.data.updatedDate)}
+              </time>
+            </span>
+          )
+        }
+      </div>
+      {(categories.length > 0 || tags.length > 0) && (
+        <div class="taxonomy">
+          {categories.map((category) => (
+            <a class="chip" href={`${base}categories/${toUrlSlug(category)}/`}>
+              {category}
+            </a>
+          ))}
+          {tags.map((tag) => (
+            <a class="chip" href={`${base}tags/${toUrlSlug(tag)}/`}>#{tag}</a>
+          ))}
+        </div>
+      )}
+    </header>
+
+    <Content />
+  </article>
+
+  <Giscus />
+</BaseLayout>

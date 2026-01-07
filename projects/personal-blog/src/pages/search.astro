@@ -1,0 +1,139 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const base = import.meta.env.BASE_URL;
+---
+
+<BaseLayout title="搜索" noindex>
+  <h1>搜索</h1>
+  <p class="meta">搜索标题、摘要、标签与分类。</p>
+
+  <input
+    id="search-input"
+    class="search-input"
+    type="search"
+    placeholder="输入关键词…"
+    autocomplete="off"
+    spellcheck="false"
+  />
+
+  <ul id="search-results" class="post-list" style="margin-top: 1rem"></ul>
+  <p id="search-empty" class="meta" hidden>没有匹配结果。</p>
+
+  <script is:inline>
+    const base = {JSON.stringify(base)};
+    const input = document.getElementById("search-input");
+    const results = document.getElementById("search-results");
+    const empty = document.getElementById("search-empty");
+
+    function normalize(value) {
+      return (value || "").toLowerCase().trim();
+    }
+
+    function toText(item) {
+      return normalize(
+        [
+          item.title,
+          item.description,
+          ...(item.tags || []),
+          ...(item.categories || [])
+        ].join(" ")
+      );
+    }
+
+    function render(items, query) {
+      results.innerHTML = "";
+      empty.hidden = true;
+
+      const q = normalize(query);
+      if (!q) {
+        empty.hidden = false;
+        empty.textContent = "请输入关键词开始搜索。";
+        return;
+      }
+
+      const matched = items
+        .map((item) => ({ item, text: toText(item) }))
+        .filter(({ text }) => text.includes(q))
+        .slice(0, 30)
+        .map(({ item }) => item);
+
+      if (matched.length === 0) {
+        empty.hidden = false;
+        empty.textContent = "没有匹配结果。";
+        return;
+      }
+
+      const locale = document.documentElement.lang || "zh-CN";
+      const formatter = new Intl.DateTimeFormat(locale, {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      });
+
+      for (const item of matched) {
+        const li = document.createElement("li");
+        li.className = "post-item";
+
+        const title = document.createElement("h3");
+        title.style.margin = "0";
+
+        const a = document.createElement("a");
+        a.href = item.url;
+        a.textContent = item.title;
+        title.appendChild(a);
+
+        const meta = document.createElement("div");
+        meta.className = "meta";
+
+        if (item.pubDate) {
+          const time = document.createElement("time");
+          const date = new Date(item.pubDate);
+          time.dateTime = date.toISOString();
+          time.textContent = formatter.format(date);
+          meta.appendChild(time);
+        }
+
+        const desc = document.createElement("p");
+        desc.style.margin = "0.5rem 0 0";
+        desc.textContent = item.description;
+
+        li.appendChild(title);
+        li.appendChild(meta);
+        li.appendChild(desc);
+        results.appendChild(li);
+      }
+    }
+
+    async function main() {
+      const res = await fetch(`${base}search.json`, {
+        headers: { Accept: "application/json" }
+      });
+      const data = await res.json();
+      const items = Array.isArray(data.items) ? data.items : [];
+
+      const params = new URLSearchParams(window.location.search);
+      const initial = params.get("q") || "";
+      input.value = initial;
+      render(items, initial);
+
+      input.addEventListener("input", () => {
+        const q = input.value;
+        const next = new URL(window.location.href);
+        if (q.trim()) next.searchParams.set("q", q);
+        else next.searchParams.delete("q");
+        window.history.replaceState(null, "", next.toString());
+        render(items, q);
+      });
+
+      input.focus();
+      input.setSelectionRange(input.value.length, input.value.length);
+    }
+
+    main().catch(() => {
+      empty.hidden = false;
+      empty.textContent = "搜索索引加载失败。";
+    });
+  </script>
+</BaseLayout>
+

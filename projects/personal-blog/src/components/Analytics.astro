@@ -1,0 +1,46 @@
+---
+import { ANALYTICS } from "../config/integrations";
+
+const provider = ANALYTICS.provider;
+---
+
+{
+  provider === "plausible" && ANALYTICS.plausibleDomain && (
+    <script
+      defer
+      data-domain={ANALYTICS.plausibleDomain}
+      src={ANALYTICS.plausibleScriptSrc ?? "https://plausible.io/js/script.js"}
+    ></script>
+  )
+}
+
+{
+  provider === "umami" && ANALYTICS.umamiScriptSrc && ANALYTICS.umamiWebsiteId && (
+    <script
+      defer
+      src={ANALYTICS.umamiScriptSrc}
+      data-website-id={ANALYTICS.umamiWebsiteId}
+    ></script>
+  )
+}
+
+{
+  provider === "google" && ANALYTICS.googleMeasurementId && (
+    <script
+      async
+      src={`https://www.googletagmanager.com/gtag/js?id=${ANALYTICS.googleMeasurementId}`}
+    ></script>
+  )
+}
+
+{
+  provider === "google" && ANALYTICS.googleMeasurementId && (
+    <script is:inline>
+      {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${ANALYTICS.googleMeasurementId}');`}
+    </script>
+  )
+}
+

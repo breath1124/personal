@@ -1,0 +1,29 @@
+---
+import { GISCUS } from "../config/integrations";
+---
+
+{
+  GISCUS.enabled && GISCUS.repo && GISCUS.repoId && GISCUS.categoryId && (
+    <section class="comments" aria-label="评论">
+      <h2 class="section-title">评论</h2>
+      <script
+        src="https://giscus.app/client.js"
+        data-repo={GISCUS.repo}
+        data-repo-id={GISCUS.repoId}
+        data-category={GISCUS.category}
+        data-category-id={GISCUS.categoryId}
+        data-mapping={GISCUS.mapping}
+        data-strict={GISCUS.strict}
+        data-reactions-enabled={GISCUS.reactionsEnabled}
+        data-emit-metadata={GISCUS.emitMetadata}
+        data-input-position={GISCUS.inputPosition}
+        data-theme={GISCUS.theme}
+        data-lang={GISCUS.lang}
+        crossorigin="anonymous"
+        async
+      ></script>
+      <noscript>请启用 JavaScript 查看评论。</noscript>
+    </section>
+  )
+}
+
