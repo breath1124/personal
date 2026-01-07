@@ -45,10 +45,11 @@ const base = import.meta.env.BASE_URL;
     <Analytics />
   </head>
   <body>
+    <a class="skip-link" href="#content">跳到正文</a>
     <div class="container">
       <div class="panel">
         <Header />
-        <main class="content">
+        <main id="content" class="content">
           <slot />
         </main>
         <Footer />
