@@ -1,4 +1,6 @@
 import { defineConfig } from "astro/config";
+import rehypeKatex from "rehype-katex";
+import remarkMath from "remark-math";
 
 function normalizeBase(base) {
   if (!base) return "/";
@@ -30,6 +32,9 @@ export default defineConfig({
   output: "static",
   site: process.env.SITE || defaultSite(),
   base: normalizeBase(process.env.BASE_PATH || defaultBase()),
+  markdown: {
+    remarkPlugins: [remarkMath],
+    rehypePlugins: [rehypeKatex]
+  },
   trailingSlash: "always"
 });
-

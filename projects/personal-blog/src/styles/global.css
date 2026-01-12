@@ -1,3 +1,5 @@
+@import "katex/dist/katex.min.css";
+
 :root {
   color-scheme: light dark;
   --bg: #000000;
@@ -332,6 +334,14 @@ article code {
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 0.1rem 0.35rem;
+}
+
+.katex {
+  font-size: 1em;
+}
+
+.katex-display {
+  margin: 1.1rem 0;
 }
 
 article img {
