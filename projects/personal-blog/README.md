@@ -59,7 +59,9 @@ npm run preview
 
 ## 自定义域名（可选）
 
-若你为 Pages 绑定了自定义域名，建议在构建时覆盖站点地址：
+若你为 Pages 绑定了自定义域名，建议在构建时覆盖站点地址（用于 `sitemap.xml` / `rss.xml` 等生成正确的绝对链接）：
 
-- 在工作流 `Build` 步骤中设置环境变量 `SITE`（例如 `https://example.com`）
-- 如需要根路径部署，可同时设置 `BASE_PATH=/`
+- 推荐在 GitHub 仓库里设置 Actions 变量（无需改代码）：
+  - `Settings → Secrets and variables → Actions → Variables`
+  - 新增 `SITE`：例如 `https://example.com`
+  - 新增 `BASE_PATH`：自定义域名通常用根路径，设为 `/`
