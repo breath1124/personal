@@ -1,0 +1,37 @@
+---
+import { NAV, SITE } from "../config/site";
+
+const base = import.meta.env.BASE_URL;
+const pathname = Astro.url.pathname;
+
+function hrefFor(path: string) {
+  return `${base}${path.replace(/^\//, "")}`;
+}
+
+function isActive(path: string) {
+  const href = hrefFor(path);
+  if (path === "/") return pathname === href;
+  return pathname.startsWith(href);
+}
+---
+
+<div class="sidebar">
+  <div class="sidebar-brand">
+    <a class="sidebar-title" href={base}>{SITE.title}</a>
+    <p class="sidebar-description">{SITE.description}</p>
+  </div>
+
+  <nav class="sidebar-nav" aria-label="侧边导航">
+    {NAV.map((item) => (
+      <a
+        class={`sidebar-link${isActive(item.href) ? " is-active" : ""}`}
+        href={hrefFor(item.href)}
+        aria-current={isActive(item.href) ? "page" : undefined}
+      >
+        {item.label}
+      </a>
+    ))}
+    <a class="sidebar-link" href={`${base}rss.xml`}>RSS</a>
+  </nav>
+</div>
+

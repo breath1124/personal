@@ -3,6 +3,7 @@ import "../styles/global.css";
 import Analytics from "../components/Analytics.astro";
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
+import Sidebar from "../components/Sidebar.astro";
 import { SITE } from "../config/site";
 
 export interface Props {
@@ -12,6 +13,7 @@ export interface Props {
 }
 
 const { title, description, noindex } = Astro.props;
+const hasAside = Astro.slots.has("aside");
 
 const pageTitle = title ? `${title} | ${SITE.title}` : SITE.title;
 const pageDescription = description ?? SITE.description;
@@ -49,9 +51,25 @@ const base = import.meta.env.BASE_URL;
     <div class="container">
       <div class="panel">
         <Header />
-        <main id="content" class="content">
-          <slot />
-        </main>
+        <div class={`layout${hasAside ? " layout--with-aside" : ""}`}>
+          <aside class="left-rail" aria-label="站点导航">
+            <div class="rail-inner">
+              <Sidebar />
+            </div>
+          </aside>
+
+          <main id="content" class="content">
+            <slot />
+          </main>
+
+          {hasAside && (
+            <aside class="right-rail" aria-label="页面信息">
+              <div class="rail-inner">
+                <slot name="aside" />
+              </div>
+            </aside>
+          )}
+        </div>
         <Footer />
       </div>
     </div>

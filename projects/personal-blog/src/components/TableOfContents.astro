@@ -1,0 +1,27 @@
+---
+type Heading = { depth: number; slug: string; text: string };
+
+export interface Props {
+  headings?: Heading[];
+  title?: string;
+}
+
+const { headings = [], title = "目录" } = Astro.props;
+const visible = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
+---
+
+<section class="aside-card">
+  <h2 class="aside-title">{title}</h2>
+  {visible.length > 0 ? (
+    <ol class="toc">
+      {visible.map((h) => (
+        <li class={`toc-item toc-depth-${h.depth}`}>
+          <a class="toc-link" href={`#${h.slug}`}>{h.text}</a>
+        </li>
+      ))}
+    </ol>
+  ) : (
+    <p class="aside-muted">本页暂无目录</p>
+  )}
+</section>
+
