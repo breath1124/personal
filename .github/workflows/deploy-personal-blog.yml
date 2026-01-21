@@ -38,11 +38,35 @@ jobs:
         working-directory: projects/personal-blog
         run: npm install
 
+      - name: Resolve site config
+        id: site
+        working-directory: projects/personal-blog
+        env:
+          SITE_OVERRIDE: ${{ vars.SITE }}
+          BASE_OVERRIDE: ${{ vars.BASE_PATH }}
+        run: |
+          site="$SITE_OVERRIDE"
+          base="$BASE_OVERRIDE"
+
+          if [ -z "$site" ] && [ -f public/CNAME ]; then
+            domain="$(tr -d '\r\n' < public/CNAME)"
+            if [ -n "$domain" ]; then
+              site="https://$domain"
+            fi
+          fi
+
+          if [ -z "$base" ] && [ -f public/CNAME ]; then
+            base="/"
+          fi
+
+          echo "site=$site" >> "$GITHUB_OUTPUT"
+          echo "base=$base" >> "$GITHUB_OUTPUT"
+
       - name: Build
         working-directory: projects/personal-blog
         env:
-          SITE: ${{ vars.SITE }}
-          BASE_PATH: ${{ vars.BASE_PATH }}
+          SITE: ${{ steps.site.outputs.site }}
+          BASE_PATH: ${{ steps.site.outputs.base }}
         run: npm run build
 
       - name: Upload artifact
