@@ -4,6 +4,7 @@ description: 这是第一篇示例文章，你可以从这里开始写自己的�
 pubDate: 2026-01-06
 tags: ["hello", "blog"]
 category: "随笔"
+draft: true
 ---
 
 欢迎来到你的个人博客。

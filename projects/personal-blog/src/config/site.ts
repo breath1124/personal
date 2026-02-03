@@ -7,6 +7,5 @@ export const SITE = {
 
 export const NAV = [
   { label: "首页", href: "/" },
-  { label: "博客", href: "/blog/" },
-  { label: "分类", href: "/categories/" }
+  { label: "博客", href: "/blog/" }
 ] as const;
