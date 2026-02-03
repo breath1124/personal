@@ -23,7 +23,6 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft))
     {
       posts.map((post) => {
         const categories = getCategories(post.data);
-        const tags = (post.data.tags ?? []).map((t) => t.trim()).filter(Boolean);
 
         return (
           <li class="post-item">
@@ -36,7 +35,7 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft))
               </time>
             </div>
             <p>{post.data.description}</p>
-            {(categories.length > 0 || tags.length > 0) && (
+            {categories.length > 0 && (
               <div class="taxonomy taxonomy--compact">
                 {categories.map((category) => (
                   <a
@@ -44,11 +43,6 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft))
                     href={`${base}categories/${toUrlSlug(category)}/`}
                   >
                     {category}
-                  </a>
-                ))}
-                {tags.map((tag) => (
-                  <a class="chip" href={`${base}tags/${toUrlSlug(tag)}/`}>
-                    #{tag}
                   </a>
                 ))}
               </div>

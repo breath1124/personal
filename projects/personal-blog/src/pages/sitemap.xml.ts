@@ -14,19 +14,13 @@ export const GET: APIRoute = async ({ site }) => {
     (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
   );
 
-  const tags = new Set<string>();
   const categories = new Set<string>();
   for (const post of posts) {
-    for (const rawTag of post.data.tags ?? []) {
-      const tag = rawTag.trim();
-      if (tag) tags.add(tag);
-    }
     for (const category of getCategories(post.data)) {
       categories.add(category);
     }
   }
 
-  const sortedTags = [...tags].sort((a, b) => a.localeCompare(b, "zh-CN"));
   const sortedCategories = [...categories].sort((a, b) =>
     a.localeCompare(b, "zh-CN")
   );
@@ -37,12 +31,7 @@ export const GET: APIRoute = async ({ site }) => {
       lastmod: posts[0]?.data.updatedDate ?? posts[0]?.data.pubDate
     },
     { loc: new URL(`${base}blog/`, site).toString() },
-    { loc: new URL(`${base}tags/`, site).toString() },
     { loc: new URL(`${base}categories/`, site).toString() },
-    { loc: new URL(`${base}about/`, site).toString() },
-    ...sortedTags.map((tag) => ({
-      loc: new URL(`${base}tags/${toUrlSlug(tag)}/`, site).toString()
-    })),
     ...sortedCategories.map((category) => ({
       loc: new URL(`${base}categories/${toUrlSlug(category)}/`, site).toString()
     })),
