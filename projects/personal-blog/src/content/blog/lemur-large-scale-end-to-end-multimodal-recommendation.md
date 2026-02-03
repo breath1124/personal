@@ -4,7 +4,7 @@ description: "解读字节跳动 LEMUR（arXiv:2511.10962v2）：把多模态 Tr
 pubDate: 2026-01-15
 tags: ["论文解读", "推荐系统", "搜索排序", "多模态", "端到端", "对比学习", "Memory Bank", "RankMixer", "LONGER"]
 category: "论文解读"
-draft: false
+draft: true
 ---
 
 > 论文：LEMUR: Large scale End-to-end MUltimodal Recommendation（arXiv:2511.10962v2）  
@@ -347,4 +347,3 @@ LEMUR 这篇论文最值得带走的不是某个单点技巧，而是一个工�
 - 再用一套采样/去重/混精把成本压到可上线
 
 如果你正在做“端到端多模态 + 长序列”的搜索/推荐系统，LEMUR 基本就是一份很扎实的工程路线图。
-

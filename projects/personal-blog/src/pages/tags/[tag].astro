@@ -2,7 +2,6 @@
 import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { formatDate } from "../../utils/date";
 import { toUrlSlug } from "../../utils/slug";
 
 export async function getStaticPaths() {
@@ -46,15 +45,9 @@ function postHref(post: CollectionEntry<"blog">) {
           <h3>
             <a href={postHref(post)}>{post.data.title}</a>
           </h3>
-          <div class="meta">
-            <time datetime={post.data.pubDate.toISOString()}>
-              {formatDate(post.data.pubDate)}
-            </time>
-          </div>
           <p>{post.data.description}</p>
         </li>
       ))
     }
   </ul>
 </BaseLayout>
-

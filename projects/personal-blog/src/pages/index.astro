@@ -2,7 +2,6 @@
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { SITE } from "../config/site";
-import { formatDate } from "../utils/date";
 import { toUrlSlug } from "../utils/slug";
 import { getCategories } from "../utils/taxonomy";
 
@@ -29,11 +28,6 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft))
             <h3>
               <a href={`${base}blog/${post.slug}/`}>{post.data.title}</a>
             </h3>
-            <div class="meta">
-              <time datetime={post.data.pubDate.toISOString()}>
-                {formatDate(post.data.pubDate)}
-              </time>
-            </div>
             <p>{post.data.description}</p>
             {categories.length > 0 && (
               <div class="taxonomy taxonomy--compact">

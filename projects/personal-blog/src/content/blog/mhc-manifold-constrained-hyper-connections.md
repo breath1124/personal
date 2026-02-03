@@ -4,7 +4,7 @@ description: "解读 mHC（arXiv:2512.24880v2）：指出 HC 的残差复合映�
 pubDate: 2026-01-16
 tags: ["论文解读", "LLM", "残差连接", "稳定性", "Hyper-Connections", "Birkhoff 多面体", "Sinkhorn-Knopp", "DeepSeek"]
 category: "论文解读"
-draft: false
+draft: true
 ---
 
 > 论文：mHC: Manifold-Constrained Hyper-Connections（arXiv:2512.24880v2）  
