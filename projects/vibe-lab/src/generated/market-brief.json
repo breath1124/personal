@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-03T05:54:46.447Z",
+  "generatedAt": "2026-04-03T06:25:20.722Z",
   "featuredFunds": [
     {
       "code": "161725",
@@ -41,42 +41,48 @@
       "stockCode": "600519",
       "shortName": "贵州茅台",
       "noticeDate": "2026-04-03 00:00:00",
-      "columnName": "回购进展情况"
+      "columnName": "回购进展情况",
+      "detailUrl": "https://data.eastmoney.com/notices/detail/600519/AN202604021820985327.html"
     },
     {
       "title": "美的集团:关于以集中竞价交易方式回购A股股份进展情况的公告",
       "stockCode": "000333",
       "shortName": "美的集团",
       "noticeDate": "2026-04-02 00:00:00",
-      "columnName": "回购进展情况"
+      "columnName": "回购进展情况",
+      "detailUrl": "https://data.eastmoney.com/notices/detail/000333/AN202604011820954106.html"
     },
     {
       "title": "美的集团:关于回购A股股份事项前十名股东和前十名无限售条件股东持股情况的公告",
       "stockCode": "000333",
       "shortName": "美的集团",
       "noticeDate": "2026-04-02 00:00:00",
-      "columnName": "其他"
+      "columnName": "其他",
+      "detailUrl": "https://data.eastmoney.com/notices/detail/000333/AN202604011820954103.html"
     },
     {
       "title": "贵州茅台:贵州茅台重大事项公告",
       "stockCode": "600519",
       "shortName": "贵州茅台",
       "noticeDate": "2026-03-31 00:00:00",
-      "columnName": "其他"
+      "columnName": "其他",
+      "detailUrl": "https://data.eastmoney.com/notices/detail/600519/AN202603301820864178.html"
     },
     {
       "title": "山西汾酒:关于选举职工董事的公告",
       "stockCode": "600809",
       "shortName": "山西汾酒",
       "noticeDate": "2025-12-31 00:00:00",
-      "columnName": "高管人员任职变动"
+      "columnName": "高管人员任职变动",
+      "detailUrl": "https://data.eastmoney.com/notices/detail/600809/AN202512301811306731.html"
     },
     {
       "title": "山西汾酒:股东减持股份结果公告",
       "stockCode": "600809",
       "shortName": "山西汾酒",
       "noticeDate": "2025-12-04 00:00:00",
-      "columnName": "股东/实际控制人股份减持"
+      "columnName": "股东/实际控制人股份减持",
+      "detailUrl": "https://data.eastmoney.com/notices/detail/600809/AN202512031793209762.html"
     }
   ],
   "marketPulse": [

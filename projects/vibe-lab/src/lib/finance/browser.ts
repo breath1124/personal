@@ -87,6 +87,11 @@ function normalizeStockCode(rawCode: string) {
   return rawCode.replace(/^[01]\./, "");
 }
 
+function buildNoticeDetailUrl(stockCode: string, artCode?: string) {
+  if (!artCode) return undefined;
+  return `https://data.eastmoney.com/notices/detail/${stockCode}/${artCode}.html`;
+}
+
 export async function loadFundSnapshot(code: string): Promise<FundSnapshot> {
   cleanupEastMoneyGlobals();
   await loadScript(
@@ -217,7 +222,11 @@ export function loadStockNotices(stockCode: string, limit = 4) {
           stockCode: item.codes?.[0]?.stock_code ?? stockCode,
           shortName: item.codes?.[0]?.short_name ?? "",
           noticeDate: item.notice_date ?? "",
-          columnName: item.columns?.map((column: any) => column.column_name).join(" / ") ?? ""
+          columnName: item.columns?.map((column: any) => column.column_name).join(" / ") ?? "",
+          detailUrl: buildNoticeDetailUrl(
+            item.codes?.[0]?.stock_code ?? stockCode,
+            item.art_code
+          )
         }))
       );
     };

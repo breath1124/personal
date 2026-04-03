@@ -65,6 +65,7 @@ export type NoticeItem = {
   shortName: string;
   noticeDate: string;
   columnName: string;
+  detailUrl?: string;
 };
 
 export type MarketFundDigest = {

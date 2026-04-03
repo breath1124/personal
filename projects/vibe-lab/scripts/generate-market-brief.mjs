@@ -39,6 +39,12 @@ function normalizeNoticePayload(text) {
   return text.replace(/^[^(]+\(/, "").replace(/\)\s*$/, "");
 }
 
+function buildNoticeDetailUrl(stockCode, artCode) {
+  return artCode
+    ? `https://data.eastmoney.com/notices/detail/${stockCode}/${artCode}.html`
+    : undefined;
+}
+
 function createEmptyFundDigest(code) {
   return {
     code,
@@ -170,7 +176,8 @@ async function loadNotices(stockCode, limit = 2) {
     stockCode: item.codes?.[0]?.stock_code ?? stockCode,
     shortName: item.codes?.[0]?.short_name ?? "",
     noticeDate: item.notice_date ?? "",
-    columnName: item.columns?.map((column) => column.column_name).join(" / ") ?? ""
+    columnName: item.columns?.map((column) => column.column_name).join(" / ") ?? "",
+    detailUrl: buildNoticeDetailUrl(item.codes?.[0]?.stock_code ?? stockCode, item.art_code)
   }));
 }
 

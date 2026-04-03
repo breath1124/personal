@@ -239,6 +239,17 @@ textarea {
   font-size: 13px;
 }
 
+.notice-link {
+  text-decoration: none;
+  transition: color 140ms ease, opacity 140ms ease;
+}
+
+.notice-link:hover,
+.notice-link:focus-visible {
+  color: var(--accent);
+  opacity: 0.88;
+}
+
 .notice-tag,
 .tone-pill {
   display: inline-flex;

@@ -439,7 +439,7 @@ export function FundAssistant({ marketBrief }: { marketBrief: MarketBrief }) {
                 </div>
 
                 <article className="subtle-card">
-                  <h3>最近公告与财报信号</h3>
+                  <h3>最近公告信号</h3>
                   <div className="notice-list notice-list--compact">
                     {selectedNotices.length > 0 ? (
                       selectedNotices.map((item) => (
@@ -448,7 +448,20 @@ export function FundAssistant({ marketBrief }: { marketBrief: MarketBrief }) {
                             <p className="notice-meta">
                               {item.shortName} · {item.stockCode} · {item.noticeDate.slice(0, 10)}
                             </p>
-                            <h3>{item.title}</h3>
+                            <h3>
+                              {item.detailUrl ? (
+                                <a
+                                  className="notice-link"
+                                  href={item.detailUrl}
+                                  rel="noreferrer"
+                                  target="_blank"
+                                >
+                                  {item.title}
+                                </a>
+                              ) : (
+                                item.title
+                              )}
+                            </h3>
                           </div>
                           <span className="notice-tag">{item.columnName || "公告"}</span>
                         </article>
