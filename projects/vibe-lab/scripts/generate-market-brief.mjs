@@ -3,6 +3,7 @@ import path from "node:path";
 import vm from "node:vm";
 
 const FEATURED_FUNDS = ["161725", "110022", "005827"];
+const OUTPUT_PATH = "src/generated/market-brief.json";
 
 function absolutePath(relativePath) {
   return path.join(process.cwd(), relativePath);
@@ -36,6 +37,99 @@ function toNumber(value) {
 
 function normalizeNoticePayload(text) {
   return text.replace(/^[^(]+\(/, "").replace(/\)\s*$/, "");
+}
+
+function createEmptyFundDigest(code) {
+  return {
+    code,
+    name: code,
+    latestNav: null,
+    navDate: null,
+    monthReturn: null,
+    quarterReturn: null,
+    yearReturn: null,
+    manager: null,
+    scale: null,
+    stockCodes: []
+  };
+}
+
+async function safeLoadFundDigest(code) {
+  try {
+    return await loadFundDigest(code);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.warn(`[market-brief] Failed to load fund ${code}: ${message}`);
+    return createEmptyFundDigest(code);
+  }
+}
+
+async function safeLoadNotices(stockCode, limit = 2) {
+  try {
+    return await loadNotices(stockCode, limit);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.warn(`[market-brief] Failed to load notices for ${stockCode}: ${message}`);
+    return [];
+  }
+}
+
+function hasUsableData(featuredFunds, noticeDigest) {
+  return (
+    featuredFunds.some(
+      (item) =>
+        item.latestNav !== null ||
+        item.monthReturn !== null ||
+        item.quarterReturn !== null ||
+        item.yearReturn !== null ||
+        item.manager !== null
+    ) || noticeDigest.length > 0
+  );
+}
+
+async function readExistingBrief() {
+  try {
+    const content = await fs.readFile(absolutePath(OUTPUT_PATH), "utf8");
+    return JSON.parse(content);
+  } catch {
+    return null;
+  }
+}
+
+function buildFallbackBrief() {
+  const featuredFunds = FEATURED_FUNDS.map((code) => {
+    const fund = createEmptyFundDigest(code);
+    const { stockCodes, ...rest } = fund;
+    return rest;
+  });
+
+  return {
+    generatedAt: new Date().toISOString(),
+    featuredFunds,
+    noticeDigest: [],
+    marketPulse: [
+      {
+        title: "市场简报暂不可用",
+        detail: "外部数据源暂时不可达，先保留其他功能的正常使用。",
+        tone: "calm"
+      },
+      {
+        title: "基金数据待刷新",
+        detail: "重新构建或稍后访问时，会再次尝试同步最新基金概览。",
+        tone: "calm"
+      },
+      {
+        title: "公告数据待刷新",
+        detail: "公告摘要依赖公开数据接口，恢复后会自动更新。",
+        tone: "calm"
+      }
+    ]
+  };
+}
+
+async function writeBrief(output) {
+  await fs.mkdir(absolutePath("src/generated"), { recursive: true });
+  await fs.writeFile(absolutePath(OUTPUT_PATH), `${JSON.stringify(output, null, 2)}\n`);
 }
 
 async function loadFundDigest(code) {
@@ -128,16 +222,17 @@ function buildPulse(featuredFunds, notices) {
 }
 
 async function main() {
+  const existingBrief = await readExistingBrief();
   const featuredFunds = [];
   const noticeDigest = [];
 
   for (const code of FEATURED_FUNDS) {
-    const digest = await loadFundDigest(code);
+    const digest = await safeLoadFundDigest(code);
     featuredFunds.push(digest);
 
     const topStockCodes = digest.stockCodes.slice(0, 2);
     for (const stockCode of topStockCodes) {
-      const notices = await loadNotices(stockCode, 2);
+      const notices = await safeLoadNotices(stockCode, 2);
       noticeDigest.push(...notices);
     }
   }
@@ -150,6 +245,17 @@ async function main() {
     .sort((a, b) => String(b.noticeDate).localeCompare(String(a.noticeDate)))
     .slice(0, 8);
 
+  if (!hasUsableData(featuredFunds, uniqueNoticeDigest)) {
+    if (existingBrief) {
+      console.warn("[market-brief] No fresh data fetched. Keeping existing snapshot.");
+      return;
+    }
+
+    console.warn("[market-brief] No existing snapshot found. Writing fallback brief.");
+    await writeBrief(buildFallbackBrief());
+    return;
+  }
+
   const output = {
     generatedAt: new Date().toISOString(),
     featuredFunds: featuredFunds.map(({ stockCodes, ...rest }) => rest),
@@ -157,14 +263,18 @@ async function main() {
     marketPulse: buildPulse(featuredFunds, uniqueNoticeDigest)
   };
 
-  await fs.mkdir(absolutePath("src/generated"), { recursive: true });
-  await fs.writeFile(
-    absolutePath("src/generated/market-brief.json"),
-    `${JSON.stringify(output, null, 2)}\n`
-  );
+  await writeBrief(output);
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
+main().catch(async (error) => {
+  const message = error instanceof Error ? error.stack ?? error.message : String(error);
+  console.warn(`[market-brief] Unexpected failure: ${message}`);
+
+  const existingBrief = await readExistingBrief();
+  if (existingBrief) {
+    console.warn("[market-brief] Existing snapshot preserved.");
+    return;
+  }
+
+  await writeBrief(buildFallbackBrief());
 });
