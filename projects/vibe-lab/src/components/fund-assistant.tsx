@@ -1,6 +1,7 @@
 "use client";
 
-import { startTransition, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { type FormEvent, startTransition, useEffect, useMemo, useState } from "react";
 import { DEFAULT_AI_SETTINGS, DEFAULT_HOLDING_DRAFT, AI_SETTINGS_KEY, HOLDINGS_KEY } from "@/lib/config";
 import { buildHoldingSections, buildPortfolioBrief } from "@/lib/finance/rules";
 import { loadFundSnapshot, loadStockNotices } from "@/lib/finance/browser";
@@ -114,7 +115,9 @@ export function FundAssistant({ marketBrief }: { marketBrief: MarketBrief }) {
     }));
   }
 
-  function addHolding() {
+  function addHolding(event?: FormEvent<HTMLFormElement>) {
+    event?.preventDefault();
+
     const normalizedCode = draft.fundCode.trim();
     if (!/^\d{6}$/.test(normalizedCode)) {
       setError("基金代码需要是 6 位数字。");
@@ -156,7 +159,7 @@ export function FundAssistant({ marketBrief }: { marketBrief: MarketBrief }) {
 
     const settings = readStorage(AI_SETTINGS_KEY, DEFAULT_AI_SETTINGS);
     if (!settings.apiKey) {
-      setError("先去设置页填写 API Key，再生成 AI 研判。");
+      setError("当前公开站点不会内置平台 API Key；如需直接可用的 AI 研判，需要接服务端代理。");
       return;
     }
 
@@ -231,86 +234,94 @@ export function FundAssistant({ marketBrief }: { marketBrief: MarketBrief }) {
               <p className="eyebrow">Portfolio</p>
               <h2>录入持仓</h2>
             </div>
-            <button className="button button--secondary" onClick={() => holdings.forEach((item) => startTransition(() => void refreshHolding(item)))}>
+            <button
+              className="button button--secondary"
+              onClick={() => holdings.forEach((item) => startTransition(() => void refreshHolding(item)))}
+              type="button"
+            >
               刷新全部
             </button>
           </div>
 
-          <div className="form-grid">
+          <form className="section-stack" onSubmit={addHolding}>
+            <div className="form-grid">
+              <label className="field">
+                <span>基金代码</span>
+                <input
+                  className="control"
+                  inputMode="numeric"
+                  placeholder="161725"
+                  value={draft.fundCode}
+                  onChange={(event) =>
+                    updateDraft("fundCode", event.target.value.replace(/\D/g, "").slice(0, 6))
+                  }
+                />
+              </label>
+              <label className="field">
+                <span>持有份额</span>
+                <input
+                  className="control"
+                  min="0"
+                  step="100"
+                  type="number"
+                  value={draft.units}
+                  onChange={(event) => updateDraft("units", Number(event.target.value))}
+                />
+              </label>
+              <label className="field">
+                <span>平均成本</span>
+                <input
+                  className="control"
+                  min="0"
+                  step="0.0001"
+                  type="number"
+                  value={draft.averageCost}
+                  onChange={(event) => updateDraft("averageCost", Number(event.target.value))}
+                />
+              </label>
+              <label className="field">
+                <span>目标仓位 (%)</span>
+                <input
+                  className="control"
+                  max="100"
+                  min="0"
+                  step="1"
+                  type="number"
+                  value={draft.targetWeight}
+                  onChange={(event) => updateDraft("targetWeight", Number(event.target.value))}
+                />
+              </label>
+            </div>
+
             <label className="field">
-              <span>基金代码</span>
-              <input
-                className="control"
-                inputMode="numeric"
-                placeholder="161725"
-                value={draft.fundCode}
-                onChange={(event) => updateDraft("fundCode", event.target.value)}
+              <span>最初买入逻辑</span>
+              <textarea
+                className="control control--textarea"
+                placeholder="比如：作为消费风格仓位，计划拿 12-18 个月，接受中等波动。"
+                value={draft.thesis}
+                onChange={(event) => updateDraft("thesis", event.target.value)}
               />
             </label>
+
             <label className="field">
-              <span>持有份额</span>
-              <input
-                className="control"
-                min="0"
-                step="100"
-                type="number"
-                value={draft.units}
-                onChange={(event) => updateDraft("units", Number(event.target.value))}
+              <span>备注</span>
+              <textarea
+                className="control control--textarea"
+                placeholder="比如：下一次只在回撤到某个区间时考虑补仓。"
+                value={draft.note}
+                onChange={(event) => updateDraft("note", event.target.value)}
               />
             </label>
-            <label className="field">
-              <span>平均成本</span>
-              <input
-                className="control"
-                min="0"
-                step="0.0001"
-                type="number"
-                value={draft.averageCost}
-                onChange={(event) => updateDraft("averageCost", Number(event.target.value))}
-              />
-            </label>
-            <label className="field">
-              <span>目标仓位 (%)</span>
-              <input
-                className="control"
-                max="100"
-                min="0"
-                step="1"
-                type="number"
-                value={draft.targetWeight}
-                onChange={(event) => updateDraft("targetWeight", Number(event.target.value))}
-              />
-            </label>
-          </div>
 
-          <label className="field field--full">
-            <span>最初买入逻辑</span>
-            <textarea
-              className="control control--textarea"
-              placeholder="比如：作为消费风格仓位，计划拿 12-18 个月，接受中等波动。"
-              value={draft.thesis}
-              onChange={(event) => updateDraft("thesis", event.target.value)}
-            />
-          </label>
+            <div className="button-row">
+              <button className="button" type="submit">
+                添加持仓
+              </button>
+              <span className="muted">支持直接输入 6 位基金代码。</span>
+            </div>
 
-          <label className="field field--full">
-            <span>备注</span>
-            <textarea
-              className="control control--textarea"
-              placeholder="比如：下一次只在回撤到某个区间时考虑补仓。"
-              value={draft.note}
-              onChange={(event) => updateDraft("note", event.target.value)}
-            />
-          </label>
-
-          <div className="button-row">
-            <button className="button" onClick={addHolding}>
-              添加持仓
-            </button>
-            <span className="muted">支持直接输入 6 位基金代码。</span>
-          </div>
-
-          {error && <p className="callout callout--warn">{error}</p>}
+            {error && <p className="callout callout--warn">{error}</p>}
+          </form>
 
           <div className="holdings-list">
             {holdings.map((holding) => {
@@ -324,11 +335,18 @@ export function FundAssistant({ marketBrief }: { marketBrief: MarketBrief }) {
                   : null;
 
               return (
-                <button
+                <article
                   className={`holding-row${selectedId === holding.id ? " is-active" : ""}`}
                   key={holding.id}
                   onClick={() => setSelectedId(holding.id)}
-                  type="button"
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      setSelectedId(holding.id);
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
                 >
                   <div>
                     <div className="holding-title">
@@ -369,7 +387,7 @@ export function FundAssistant({ marketBrief }: { marketBrief: MarketBrief }) {
                       </button>
                     </div>
                   </div>
-                </button>
+                </article>
               );
             })}
           </div>
@@ -465,12 +483,12 @@ export function FundAssistant({ marketBrief }: { marketBrief: MarketBrief }) {
             </label>
 
             <div className="button-row">
-              <button className="button" disabled={aiLoading} onClick={generateAiReport}>
+              <button className="button" disabled={aiLoading} onClick={generateAiReport} type="button">
                 {aiLoading ? "生成中..." : "生成 AI 研判"}
               </button>
-              <a className="inline-link inline-link--subtle" href="/lab/settings/">
+              <Link className="inline-link inline-link--subtle" href="/settings">
                 去设置模型
-              </a>
+              </Link>
             </div>
 
             {aiResponse ? (

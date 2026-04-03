@@ -131,10 +131,15 @@ export function SettingsPanel() {
         </label>
 
         <div className="button-row">
-          <button className="button" disabled={!settings.apiKey || testing} onClick={testConnection}>
+          <button
+            className="button"
+            disabled={!settings.apiKey || testing}
+            onClick={testConnection}
+            type="button"
+          >
             {testing ? "连接中..." : "测试连接"}
           </button>
-          <button className="button button--secondary" onClick={resetSettings}>
+          <button className="button button--secondary" onClick={resetSettings} type="button">
             恢复默认值
           </button>
         </div>
@@ -152,6 +157,7 @@ export function SettingsPanel() {
         <ul className="bullet-list">
           <li>当前应用不会把你的 API Key 写入仓库，也不会上传到我的环境。</li>
           <li>所有配置默认保存在浏览器本地，清空浏览器数据后会丢失。</li>
+          <li>当前这是公开静态站，不会内置平台通用 Key；要做免配置 AI，需要接服务端代理。</li>
           <li>如果你想切换到其他兼容接口，只需要改 Base URL 和 Model。</li>
         </ul>
       </section>

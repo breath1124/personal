@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { DEFAULT_AI_SETTINGS, AI_SETTINGS_KEY } from "@/lib/config";
 import { MBTI_QUESTIONS, buildMbtiReport, scoreMbti } from "@/lib/mbti";
@@ -45,7 +46,7 @@ export function MbtiAssistant() {
 
     const settings = readStorage(AI_SETTINGS_KEY, DEFAULT_AI_SETTINGS);
     if (!settings.apiKey) {
-      setError("先去设置页填写 API Key，再生成 AI 解读。");
+      setError("当前公开站点不会内置平台 API Key；如需直接可用的 AI 解读，需要接服务端代理。");
       return;
     }
 
@@ -153,7 +154,7 @@ export function MbtiAssistant() {
         </div>
 
         <div className="button-row">
-          <button className="button" onClick={submitAssessment}>
+          <button className="button" onClick={submitAssessment} type="button">
             生成结果报告
           </button>
           {error && <span className="callout callout--warn">{error}</span>}
@@ -200,13 +201,13 @@ export function MbtiAssistant() {
                 <p className="eyebrow">AI Readout</p>
                 <h2>AI 个性化解读</h2>
               </div>
-              <a className="inline-link inline-link--subtle" href="/lab/settings/">
+              <Link className="inline-link inline-link--subtle" href="/settings">
                 设置模型
-              </a>
+              </Link>
             </div>
 
             <div className="button-row">
-              <button className="button" disabled={aiLoading} onClick={generateAiReadout}>
+              <button className="button" disabled={aiLoading} onClick={generateAiReadout} type="button">
                 {aiLoading ? "生成中..." : "生成 AI 解读"}
               </button>
             </div>

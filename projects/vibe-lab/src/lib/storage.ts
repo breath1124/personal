@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function readStorage<T>(key: string, fallback: T): T {
   if (typeof window === "undefined") return fallback;
@@ -15,17 +15,27 @@ export function readStorage<T>(key: string, fallback: T): T {
 
 export function writeStorage<T>(key: string, value: T) {
   if (typeof window === "undefined") return;
-  window.localStorage.setItem(key, JSON.stringify(value));
+
+  try {
+    window.localStorage.setItem(key, JSON.stringify(value));
+  } catch (error) {
+    console.warn(`[storage] Failed to persist ${key}`, error);
+  }
 }
 
 export function usePersistentState<T>(key: string, fallback: T) {
   const [value, setValue] = useState<T>(fallback);
   const [hydrated, setHydrated] = useState(false);
+  const fallbackRef = useRef(fallback);
 
   useEffect(() => {
-    setValue(readStorage(key, fallback));
+    fallbackRef.current = fallback;
+  }, [fallback]);
+
+  useEffect(() => {
+    setValue(readStorage(key, fallbackRef.current));
     setHydrated(true);
-  }, [fallback, key]);
+  }, [key]);
 
   useEffect(() => {
     if (!hydrated) return;

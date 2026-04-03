@@ -1,3 +1,4 @@
+import Link from "next/link";
 import marketBrief from "@/generated/market-brief.json";
 import { AppShell } from "@/components/app-shell";
 import type { MarketBrief } from "@/lib/types";
@@ -21,17 +22,17 @@ export default function HomePage() {
           <p className="eyebrow">Fund Copilot</p>
           <h2>基金助手</h2>
           <p>录入持仓、同步基金画像、查看公告信号，再决定下一步该继续拿、分批加还是先降仓。</p>
-          <a className="inline-link" href="/lab/fund/">
+          <Link className="inline-link" href="/fund">
             打开助手
-          </a>
+          </Link>
         </article>
         <article className="hero-card">
           <p className="eyebrow">MBTI Report</p>
           <h2>MBTI 助手</h2>
           <p>不是随手玩玩的 12 题测试，而是更完整的自评和工作沟通报告。</p>
-          <a className="inline-link" href="/lab/mbti/">
+          <Link className="inline-link" href="/mbti">
             开始测评
-          </a>
+          </Link>
         </article>
       </section>
 
