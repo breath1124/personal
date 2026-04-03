@@ -95,6 +95,24 @@ export const LAB_APPS: LabApp[] = [
     ],
     disclaimer:
       "该工具仅用于帮助梳理决策因素，不构成任何投资建议，也不会接入实时行情。"
+  },
+  {
+    slug: "reaction-lab",
+    title: "反应力实验室",
+    category: "认知表现测试",
+    status: "live",
+    tagline: "把启动速度、方向切换和抑制控制拆开测，并输出逐轮数据分析。",
+    description:
+      "通过简单反应、选择反应和 Go/No-Go 三段测试，给出速度、稳定性、控制力和切换成本的综合判断。",
+    href: "/lab/reaction/",
+    estimatedTime: "约 4 分钟",
+    highlights: ["3 段测试", "逐轮数据", "综合分析"],
+    inputs: ["点击/按键反应", "方向判断", "Go/No-Go 控制"],
+    useCases: [
+      "看看自己是启动慢、切换慢还是容易抢拍",
+      "用一组可复测的数据记录近期状态",
+      "把“反应快不快”拆成更具体的能力维度"
+    ]
   }
 ];
 

@@ -5,6 +5,7 @@ const links = [
   { href: "/", label: "Lab 首页" },
   { href: "/fund", label: "基金助手" },
   { href: "/mbti", label: "MBTI" },
+  { href: "/reaction", label: "反应力" },
   { href: "/settings", label: "设置" }
 ];
 
