@@ -5,7 +5,10 @@ on:
     branches: [main]
     paths:
       - "projects/personal-blog/**"
+      - "projects/vibe-lab/**"
       - ".github/workflows/deploy-personal-blog.yml"
+  schedule:
+    - cron: "20 1 * * *"
   workflow_dispatch:
 
 permissions:
@@ -38,6 +41,10 @@ jobs:
         working-directory: projects/personal-blog
         run: npm install
 
+      - name: Install vibe lab dependencies
+        working-directory: projects/vibe-lab
+        run: npm install
+
       - name: Resolve site config
         id: site
         working-directory: projects/personal-blog
@@ -68,6 +75,16 @@ jobs:
           SITE: ${{ steps.site.outputs.site }}
           BASE_PATH: ${{ steps.site.outputs.base }}
         run: npm run build
+
+      - name: Build vibe lab
+        working-directory: projects/vibe-lab
+        run: npm run build
+
+      - name: Merge vibe lab into site artifact
+        run: |
+          rm -rf projects/personal-blog/dist/lab
+          mkdir -p projects/personal-blog/dist/lab
+          cp -R projects/vibe-lab/out/. projects/personal-blog/dist/lab/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

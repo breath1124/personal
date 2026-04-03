@@ -26,34 +26,34 @@ export type LabApp = {
 export const HOME_CHANNELS: Channel[] = [
   {
     slug: "blog",
-    eyebrow: "长期内容沉淀",
+    eyebrow: "Writing",
     title: "博客",
     description:
-      "继续保留现在的技术博客区，用来记录论文阅读、工程实践、产品思考和长期判断。",
+      "保留长期写作，记录论文阅读、工程实践、产品思考和更慢一些的判断。",
     href: "/blog/",
     ctaLabel: "进入博客",
-    highlights: ["文章归档", "标签/分类浏览", "适合持续更新"]
+    highlights: ["长文", "归档", "持续更新"]
   },
   {
     slug: "vibe",
-    eyebrow: "可直接使用的实验项目",
-    title: "Vibe Coding 实验室",
+    eyebrow: "Lab",
+    title: "实验室",
     description:
-      "把一些有意思的想法做成交互界面，先从 MBTI 测试助手和基金买入卖出助手开始，后续会继续扩展更多可玩的页面。",
-    href: "/vibe/",
-    ctaLabel: "进入实验室",
-    highlights: ["小而实用", "页面级扩展", "未来可持续新增"]
+      "把一些想法做成可以直接打开使用的界面，而不是只停留在文章或截图里。",
+    href: "/lab/",
+    ctaLabel: "进入 Lab",
+    highlights: ["可直接使用", "数据驱动", "AI 辅助"]
   }
 ];
 
 export const LAB_OVERVIEW = {
-  title: "Vibe Coding 实验室",
+  title: "实验室",
   description:
-    "这里放的是可以直接打开、输入信息、获得反馈的界面型项目。它们不是文章附属页，而是站点的第二条主入口。",
+    "这里放的是可以直接打开和使用的交互项目。",
   principles: [
     "每个项目都应该能单独访问和独立扩展。",
     "项目卡片和详情页由同一份注册数据驱动，减少重复维护。",
-    "后续新增项目时，只需要补一个组件并在这里注册。"
+    "新增项目时，只需要补一个组件并在这里注册。"
   ]
 } as const;
 
@@ -63,17 +63,17 @@ export const LAB_APPS: LabApp[] = [
     title: "MBTI 测试助手",
     category: "人格探索",
     status: "live",
-    tagline: "用一组更适合中文语境的问题，快速判断你的 MBTI 倾向。",
+    tagline: "更完整的题组、维度结果和针对工作沟通的结果报告。",
     description:
-      "通过 12 道题聚合四个维度的偏好分数，给出类型、维度解释和针对工作沟通的建议。",
-    href: "/vibe/mbti-assistant/",
-    estimatedTime: "约 3-5 分钟",
-    highlights: ["12 道直觉题", "即时类型结果", "沟通/协作建议"],
-    inputs: ["题目选择", "关注场景", "当前状态自评"],
+      "完成更完整的 MBTI 自评后，可以看到类型、维度信心、场景化建议，以及可选的 AI 解读。",
+    href: "/lab/mbti/",
+    estimatedTime: "约 8 分钟",
+    highlights: ["24 题测评", "结果报告", "AI 解读"],
+    inputs: ["题目回答", "场景选择", "当前关注问题"],
     useCases: [
-      "想快速了解自己的 MBTI 倾向",
-      "做团队协作前的沟通风格梳理",
-      "需要一个更轻量的自测入口"
+      "重新梳理自己的工作风格",
+      "做团队协作前的沟通风格复盘",
+      "需要一份更像报告而不是小测试的结果"
     ]
   },
   {
@@ -81,17 +81,17 @@ export const LAB_APPS: LabApp[] = [
     title: "基金买入卖出助手",
     category: "投资决策整理",
     status: "live",
-    tagline: "把仓位、估值、盈亏和流动性需求放到同一个决策框架里。",
+    tagline: "录入真实持仓、同步基金画像、公告信号和 AI 研判。",
     description:
-      "输入你的仓位、目标配置、估值判断和现金需求后，得到偏买入、偏持有或偏减仓的结构化建议。",
-    href: "/vibe/fund-buy-sell-assistant/",
-    estimatedTime: "约 2 分钟",
-    highlights: ["仓位诊断", "节奏建议", "风险提醒"],
-    inputs: ["仓位/目标仓位", "盈亏幅度", "估值/流动性判断"],
+      "录入持仓后，应用会拉基金净值、基金经理、规模、资产配置和重仓股公告，再结合你的问题生成分析。",
+    href: "/lab/fund/",
+    estimatedTime: "约 5 分钟",
+    highlights: ["持仓管理", "公告信号", "AI 研判"],
+    inputs: ["基金代码", "持仓份额/成本", "买入逻辑与问题"],
     useCases: [
-      "不知道现在该补仓还是继续等",
-      "账户盈利后想判断是否需要止盈",
-      "需要先整理思路再决定动作"
+      "把零散持仓整理成一个清楚的工作台",
+      "在继续拿、分批加仓和控制仓位之间做判断",
+      "把基金重仓股最近公告纳入决策视野"
     ],
     disclaimer:
       "该工具仅用于帮助梳理决策因素，不构成任何投资建议，也不会接入实时行情。"

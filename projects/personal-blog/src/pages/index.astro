@@ -17,28 +17,18 @@ const posts = allPosts.slice(0, 4);
 <BaseLayout>
   <section class="hero hero--portal">
     <div class="hero-copy">
-      <p class="eyebrow">个人主页入口</p>
-      <h1>博客与实验室并行的个人站点</h1>
+      <p class="eyebrow">Changyungo</p>
+      <h1>写作与实验并行的个人网站</h1>
       <p>
-        这里保留长期写作，也放入可以直接打开使用的小工具和界面型项目。你可以从内容进入，也可以从交互入口进入。
+        一边写长文，一边把想法做成交互界面。这里有适合慢慢读的内容，也有可以直接打开使用的工具。
       </p>
-    </div>
-
-    <div class="metric-strip">
-      <div class="metric-card">
-        <span>站点定位</span>
-        <strong>内容 + 工具</strong>
-        <p>不只是一组博客文章，而是持续扩展的个人门户。</p>
-      </div>
-      <div class="metric-card">
-        <span>博客文章</span>
-        <strong>{allPosts.length} 篇</strong>
-        <p>论文阅读、工程实践与产品思考持续沉淀。</p>
-      </div>
-      <div class="metric-card">
-        <span>实验项目</span>
-        <strong>{LAB_APPS.length} 个</strong>
-        <p>可直接使用的交互页面，后续会继续增加。</p>
+      <div class="hero-actions">
+        <a class="hero-button hero-button--primary" href={`${base}blog/`}>
+          进入博客
+        </a>
+        <a class="hero-button" href={`${base}lab/`}>
+          打开实验室
+        </a>
       </div>
     </div>
   </section>
@@ -46,10 +36,9 @@ const posts = allPosts.slice(0, 4);
   <section class="section-block">
     <div class="section-head">
       <div>
-        <p class="eyebrow">双入口</p>
-        <h2>从两个方向进入这个网站</h2>
+        <p class="eyebrow">Two Ways In</p>
+        <h2>两个入口，各做一件事</h2>
       </div>
-      <p class="section-head__note">一个用于阅读，一个用于直接操作。</p>
     </div>
 
     <div class="portal-grid">
@@ -62,8 +51,8 @@ const posts = allPosts.slice(0, 4);
   <section class="section-block">
     <div class="section-head">
       <div>
-        <p class="eyebrow">最新文章</p>
-        <h2>继续保留博客这条主线</h2>
+        <p class="eyebrow">Recent Writing</p>
+        <h2>最近文章</h2>
       </div>
       <a class="section-link" href={`${base}blog/`}>
         查看全部文章 →
@@ -103,17 +92,17 @@ const posts = allPosts.slice(0, 4);
   <section class="section-block">
     <div class="section-head">
       <div>
-        <p class="eyebrow">实验室精选</p>
-        <h2>可以直接点开使用的界面项目</h2>
+        <p class="eyebrow">Lab Picks</p>
+        <h2>现在可以直接打开的项目</h2>
       </div>
-      <a class="section-link" href={`${base}vibe/`}>
-        查看全部项目 →
+      <a class="section-link" href={`${base}lab/`}>
+        进入实验室 →
       </a>
     </div>
 
     <div class="app-grid">
       {LAB_APPS.map((app) => (
-        <LabAppCard app={app} />
+        <LabAppCard app={app} compact />
       ))}
     </div>
   </section>

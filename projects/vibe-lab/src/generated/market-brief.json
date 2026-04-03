@@ -1,0 +1,99 @@
+{
+  "generatedAt": "2026-04-03T04:00:44.173Z",
+  "featuredFunds": [
+    {
+      "code": "161725",
+      "name": "招商中证白酒指数(LOF)A",
+      "latestNav": 0.6502,
+      "navDate": "2026-04-01T16:00:00.000Z",
+      "monthReturn": -3.3,
+      "quarterReturn": -8.41,
+      "yearReturn": -20.74,
+      "manager": "侯昊",
+      "scale": "284.95 亿"
+    },
+    {
+      "code": "110022",
+      "name": "易方达消费行业股票",
+      "latestNav": 3.171,
+      "navDate": "2026-04-01T16:00:00.000Z",
+      "monthReturn": -2.79,
+      "quarterReturn": -7.9,
+      "yearReturn": -11.6,
+      "manager": "萧楠",
+      "scale": "150.01 亿"
+    },
+    {
+      "code": "005827",
+      "name": "易方达蓝筹精选混合",
+      "latestNav": 1.7699,
+      "navDate": "2026-04-01T16:00:00.000Z",
+      "monthReturn": -3.99,
+      "quarterReturn": -4.96,
+      "yearReturn": -6.89,
+      "manager": "张坤",
+      "scale": "310.21 亿"
+    }
+  ],
+  "noticeDigest": [
+    {
+      "title": "贵州茅台:贵州茅台关于回购股份实施进展的公告",
+      "stockCode": "600519",
+      "shortName": "贵州茅台",
+      "noticeDate": "2026-04-03 00:00:00",
+      "columnName": "回购进展情况"
+    },
+    {
+      "title": "美的集团:关于以集中竞价交易方式回购A股股份进展情况的公告",
+      "stockCode": "000333",
+      "shortName": "美的集团",
+      "noticeDate": "2026-04-02 00:00:00",
+      "columnName": "回购进展情况"
+    },
+    {
+      "title": "美的集团:关于回购A股股份事项前十名股东和前十名无限售条件股东持股情况的公告",
+      "stockCode": "000333",
+      "shortName": "美的集团",
+      "noticeDate": "2026-04-02 00:00:00",
+      "columnName": "其他"
+    },
+    {
+      "title": "贵州茅台:贵州茅台重大事项公告",
+      "stockCode": "600519",
+      "shortName": "贵州茅台",
+      "noticeDate": "2026-03-31 00:00:00",
+      "columnName": "其他"
+    },
+    {
+      "title": "山西汾酒:关于选举职工董事的公告",
+      "stockCode": "600809",
+      "shortName": "山西汾酒",
+      "noticeDate": "2025-12-31 00:00:00",
+      "columnName": "高管人员任职变动"
+    },
+    {
+      "title": "山西汾酒:股东减持股份结果公告",
+      "stockCode": "600809",
+      "shortName": "山西汾酒",
+      "noticeDate": "2025-12-04 00:00:00",
+      "columnName": "股东/实际控制人股份减持"
+    }
+  ],
+  "marketPulse": [
+    {
+      "title": "相对强势基金",
+      "detail": "易方达消费行业股票 最近 1 个月 -2.79% 。强势不代表立刻追高，更适合拿来观察风格是否继续占优。",
+      "tone": "positive"
+    },
+    {
+      "title": "相对承压基金",
+      "detail": "易方达蓝筹精选混合 最近 1 个月 -3.99% 。如果这也是你的持仓，需要结合仓位和主题逻辑重新判断。",
+      "tone": "watch"
+    },
+    {
+      "title": "公告信号",
+      "detail": "最近抓到 1 条偏风险公告，建议在做加仓前先复核对应重仓股的事件性质。",
+      "tone": "watch"
+    }
+  ]
+}

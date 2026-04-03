@@ -1,16 +1,16 @@
 # personal-blog（Astro）
 
-一个面向 GitHub Pages 的静态个人网站，当前包含两条主入口：
+一个面向 GitHub Pages 的个人网站，目前由两个部分组成：
 
 - 博客：长期内容沉淀
-- Vibe Coding 实验室：可直接打开使用的小工具和界面项目
+- Lab：独立的交互应用区，部署在 `/lab/`
 
 ## 功能
 
 - 文章：列表页、详情页（Content Collections）
-- 门户首页：博客 / 实验室双入口
-- 实验室：`/vibe/` 项目列表页
-- 工具页：`/vibe/<slug>/`，当前包含 MBTI 测试助手、基金买入卖出助手
+- 门户首页：博客 / Lab 双入口
+- Lab 入口：`/lab/`
+- 旧路径兼容：`/vibe/` 和 `/vibe/<slug>/` 会跳转到新的 `/lab/`
 - 标签：`/tags/`、`/tags/<tag>/`
 - 分类：`/categories/`、`/categories/<category>/`
 - 搜索：`/search/`（构建时生成 `search.json`，前端本地检索）
@@ -31,6 +31,14 @@ npm run dev
 cd projects/personal-blog
 npm run build
 npm run preview
+```
+
+若需要同时验证新的 Lab 应用：
+
+```bash
+cd projects/vibe-lab
+npm install
+npm run build
 ```
 
 ## 写文章
@@ -63,19 +71,18 @@ npm run preview
 
 编辑：`src/config/site.ts`
 
-## 新增一个实验室项目
+## Lab 应用
 
-当前实验室区域按“注册表 + 独立组件”的方式组织，便于后续继续扩展界面型项目。
+新的交互应用区位于：
 
-1. 在 `src/config/hub.ts` 的 `LAB_APPS` 里注册新项目元数据。
-2. 在 `src/components/vibe/` 下新增对应的 Astro 组件。
-3. 在 `src/pages/vibe/[slug].astro` 中把 `slug` 映射到新组件。
+- `projects/vibe-lab`
 
-完成后，新项目会自动出现在：
+主站会在 GitHub Actions 构建时，把 `projects/vibe-lab/out` 合并到博客产物的 `/lab/` 路径。
 
-- 首页实验室精选
-- `/vibe/` 项目列表页
-- 对应详情路由
+当前 Lab 中已包含：
+
+- 基金助手
+- MBTI 助手
 
 ## 自定义域名（可选）
 

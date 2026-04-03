@@ -1,9 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import LabAppCard from "../../components/LabAppCard.astro";
-import FundBuySellAssistant from "../../components/vibe/FundBuySellAssistant.astro";
-import MbtiAssistant from "../../components/vibe/MbtiAssistant.astro";
 import { LAB_APPS } from "../../config/hub";
+const base = import.meta.env.BASE_URL;
 
 export function getStaticPaths() {
   return LAB_APPS.map((app) => ({
@@ -13,68 +11,20 @@ export function getStaticPaths() {
 }
 
 const { app } = Astro.props;
-
-const toolComponents = {
-  "mbti-assistant": MbtiAssistant,
-  "fund-buy-sell-assistant": FundBuySellAssistant
-};
-
-const ToolComponent = toolComponents[app.slug];
-const otherApps = LAB_APPS.filter((item) => item.slug !== app.slug).slice(0, 2);
+const target = `${base}${app.href.replace(/^\//, "")}`;
 ---
 
-<BaseLayout title={app.title} description={app.description}>
-  <section class="hero hero--tool">
-    <div class="hero-copy">
-      <p class="eyebrow">{app.category}</p>
-      <h1>{app.title}</h1>
-      <p>{app.tagline}</p>
-    </div>
-
-    <div class="tool-hero-card">
-      <span class={`status-badge status-badge--${app.status}`}>
-        {app.status === "live" ? "可直接使用" : app.status === "beta" ? "Beta" : "规划中"}
-      </span>
-      <p>{app.description}</p>
-      <div class="app-card__chips">
-        {app.highlights.map((item) => (
-          <span class="chip">{item}</span>
-        ))}
-      </div>
-      {app.disclaimer && <p class="tool-note">{app.disclaimer}</p>}
-    </div>
+<BaseLayout title={`${app.title} 跳转`} description="正在进入新的实验室应用" noindex>
+  <section class="hero">
+    <h1>正在进入 {app.title}</h1>
+    <p>这个项目已经迁移到新的 Lab 应用区。</p>
+    <p style="margin-top: 1rem">
+      <a href={target}>
+        如果没有自动跳转，点这里进入 →
+      </a>
+    </p>
   </section>
-
-  <ToolComponent />
-
-  <div slot="aside">
-    <section class="aside-card">
-      <h2 class="aside-title">使用方式</h2>
-      <ul class="app-points aside-points">
-        {app.inputs.map((item) => (
-          <li>{item}</li>
-        ))}
-      </ul>
-    </section>
-
-    <section class="aside-card">
-      <h2 class="aside-title">适合场景</h2>
-      <ul class="app-points aside-points">
-        {app.useCases.map((item) => (
-          <li>{item}</li>
-        ))}
-      </ul>
-    </section>
-
-    {otherApps.length > 0 && (
-      <section class="aside-card">
-        <h2 class="aside-title">继续看看</h2>
-        <div class="aside-apps">
-          {otherApps.map((otherApp) => (
-            <LabAppCard app={otherApp} compact />
-          ))}
-        </div>
-      </section>
-    )}
-  </div>
+  <script is:inline define:vars={{ target }}>
+    window.location.replace(target);
+  </script>
 </BaseLayout>

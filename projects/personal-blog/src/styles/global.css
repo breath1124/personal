@@ -1,24 +1,24 @@
 @import "katex/dist/katex.min.css";
 
 :root {
-  color-scheme: light dark;
-  --bg: #000000;
-  --surface: rgba(28, 28, 30, 0.78);
-  --surface-2: rgba(44, 44, 46, 0.72);
-  --text: #f5f5f7;
-  --muted: rgba(235, 235, 245, 0.6);
-  --link: #2997ff;
-  --link-hover: #5ac8fa;
-  --border: rgba(255, 255, 255, 0.14);
-  --border-strong: rgba(255, 255, 255, 0.22);
-  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 18px 60px rgba(0, 0, 0, 0.55);
-  --shadow-hover: 0 12px 34px rgba(0, 0, 0, 0.32);
-  --ring: rgba(41, 151, 255, 0.35);
+  color-scheme: light;
+  --bg: #f5f5f7;
+  --surface: rgba(255, 255, 255, 0.86);
+  --surface-2: rgba(255, 255, 255, 0.94);
+  --text: #11131a;
+  --muted: #69707d;
+  --link: #0a66ff;
+  --link-hover: #0046c7;
+  --border: rgba(15, 23, 42, 0.08);
+  --border-strong: rgba(15, 23, 42, 0.16);
+  --shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+  --shadow-hover: 0 20px 48px rgba(15, 23, 42, 0.1);
+  --ring: rgba(10, 102, 255, 0.18);
 
-  --chip-bg: rgba(255, 255, 255, 0.08);
-  --code-bg: rgba(255, 255, 255, 0.06);
+  --chip-bg: rgba(15, 23, 42, 0.03);
+  --code-bg: rgba(15, 23, 42, 0.04);
 
-  --radius-lg: 24px;
+  --radius-lg: 30px;
   --radius-md: 18px;
   --radius-sm: 14px;
   --container: 60rem;
@@ -27,26 +27,6 @@
 @media (min-width: 1024px) {
   :root {
     --container: 78rem;
-  }
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    --bg: #f5f5f7;
-    --surface: rgba(255, 255, 255, 0.78);
-    --surface-2: rgba(255, 255, 255, 0.66);
-    --text: #1d1d1f;
-    --muted: #6e6e73;
-    --link: #0071e3;
-    --link-hover: #005bb5;
-    --border: rgba(0, 0, 0, 0.1);
-    --border-strong: rgba(0, 0, 0, 0.16);
-    --shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 18px 60px rgba(0, 0, 0, 0.12);
-    --shadow-hover: 0 12px 34px rgba(0, 0, 0, 0.12);
-    --ring: rgba(0, 113, 227, 0.28);
-
-    --chip-bg: rgba(0, 0, 0, 0.04);
-    --code-bg: rgba(0, 0, 0, 0.04);
   }
 }
 
@@ -66,14 +46,14 @@ body {
     "Noto Sans CJK SC", "Microsoft YaHei", ui-sans-serif, system-ui, Arial,
     sans-serif;
   background: radial-gradient(
-      1100px 700px at 20% -10%,
-      rgba(41, 151, 255, 0.18),
-      transparent 58%
+      900px 520px at 0% 0%,
+      rgba(10, 102, 255, 0.08),
+      transparent 54%
     ),
     radial-gradient(
-      900px 640px at 100% 0%,
-      rgba(175, 82, 222, 0.16),
-      transparent 55%
+      780px 480px at 100% 0%,
+      rgba(15, 23, 42, 0.05),
+      transparent 42%
     ),
     var(--bg);
   color: var(--text);
@@ -730,11 +710,11 @@ article hr {
 .portal-card {
   display: grid;
   gap: 1.15rem;
-  padding: 1.2rem;
+  padding: 1.35rem;
   border-radius: var(--radius-lg);
   border: 1px solid var(--border);
   color: var(--text);
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), transparent 52%),
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.82), transparent 52%),
     var(--surface-2);
   transition: transform 150ms ease, box-shadow 150ms ease,
     border-color 150ms ease;
@@ -748,12 +728,12 @@ article hr {
 }
 
 .portal-card--blog {
-  background: linear-gradient(145deg, rgba(41, 151, 255, 0.16), transparent 58%),
+  background: linear-gradient(145deg, rgba(10, 102, 255, 0.08), transparent 58%),
     var(--surface-2);
 }
 
 .portal-card--vibe {
-  background: linear-gradient(145deg, rgba(52, 199, 89, 0.16), transparent 58%),
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.05), transparent 58%),
     var(--surface-2);
 }
 
@@ -785,7 +765,7 @@ article hr {
   align-items: center;
   padding: 0.32rem 0.7rem;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.84);
   border: 1px solid var(--border);
   color: var(--text);
   font-size: 0.88rem;
@@ -861,7 +841,7 @@ article hr {
   padding: 0.7rem 0.75rem;
   border-radius: 14px;
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(15, 23, 42, 0.02);
 }
 
 .app-meta dt {
@@ -886,7 +866,7 @@ article hr {
 }
 
 .status-badge--live {
-  background: rgba(52, 199, 89, 0.16);
+  background: rgba(34, 197, 94, 0.12);
 }
 
 .status-badge--beta {
@@ -1042,7 +1022,7 @@ article hr {
   padding: 0.78rem 0.85rem;
   border-radius: 14px;
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(15, 23, 42, 0.015);
   cursor: pointer;
   transition: border-color 140ms ease, transform 140ms ease,
     background-color 140ms ease;
@@ -1101,7 +1081,7 @@ article hr {
   padding: 1rem;
   border-radius: var(--radius-md);
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(15, 23, 42, 0.02);
 }
 
 .result-panel__header {
@@ -1148,6 +1128,39 @@ article hr {
 .aside-apps {
   display: grid;
   gap: 0.75rem;
+}
+
+.hero-actions {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.hero-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.74);
+  color: var(--text);
+  font-weight: 600;
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+
+.hero-button:hover {
+  text-decoration: none;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
+}
+
+.hero-button--primary {
+  background: var(--text);
+  border-color: var(--text);
+  color: #fff;
 }
 
 @media (min-width: 768px) {

@@ -1,64 +1,17 @@
 ---
-import LabAppCard from "../../components/LabAppCard.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { LAB_APPS, LAB_OVERVIEW } from "../../config/hub";
+const base = import.meta.env.BASE_URL;
 ---
 
-<BaseLayout title="Vibe Coding 实验室" description={LAB_OVERVIEW.description}>
-  <section class="hero hero--portal">
-    <div class="hero-copy">
-      <p class="eyebrow">Vibe Coding</p>
-      <h1>{LAB_OVERVIEW.title}</h1>
-      <p>{LAB_OVERVIEW.description}</p>
-    </div>
-
-    <div class="metric-strip">
-      <div class="metric-card">
-        <span>当前项目</span>
-        <strong>{LAB_APPS.length} 个</strong>
-        <p>每个项目都可以单独访问，也可以继续扩展成功能区。</p>
-      </div>
-      <div class="metric-card">
-        <span>实现方式</span>
-        <strong>配置驱动</strong>
-        <p>卡片、列表和详情页共用同一份项目注册表。</p>
-      </div>
-      <div class="metric-card">
-        <span>后续扩展</span>
-        <strong>低成本新增</strong>
-        <p>新增项目时，只需要补一个组件并注册元数据。</p>
-      </div>
-    </div>
+<BaseLayout title="实验室跳转" description="正在进入新的实验室应用" noindex>
+  <section class="hero">
+    <h1>正在进入实验室</h1>
+    <p>新的交互应用已经迁移到独立的 Lab 区域。</p>
+    <p style="margin-top: 1rem">
+      <a href={`${base}lab/`}>如果没有自动跳转，点这里进入 →</a>
+    </p>
   </section>
-
-  <section class="section-block">
-    <div class="section-head">
-      <div>
-        <p class="eyebrow">实验室原则</p>
-        <h2>为未来继续加项目预留结构</h2>
-      </div>
-    </div>
-
-    <ul class="app-points section-points">
-      {LAB_OVERVIEW.principles.map((item) => (
-        <li>{item}</li>
-      ))}
-    </ul>
-  </section>
-
-  <section class="section-block">
-    <div class="section-head">
-      <div>
-        <p class="eyebrow">项目列表</p>
-        <h2>已经上线的工具</h2>
-      </div>
-      <p class="section-head__note">后续新增项目会自动出现在这里。</p>
-    </div>
-
-    <div class="app-grid">
-      {LAB_APPS.map((app) => (
-        <LabAppCard app={app} />
-      ))}
-    </div>
-  </section>
+  <script is:inline define:vars={{ target: `${base}lab/` }}>
+    window.location.replace(target);
+  </script>
 </BaseLayout>

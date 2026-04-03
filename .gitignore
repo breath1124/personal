@@ -6,9 +6,10 @@
 **/node_modules/
 **/dist/
 **/.astro/
+**/.next/
+**/out/
 
 # Env
 **/.env
 **/.env.*
 !**/.env.example
-
