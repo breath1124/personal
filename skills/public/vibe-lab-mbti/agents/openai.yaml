@@ -1,0 +1,4 @@
+interface:
+  display_name: "Vibe Lab MBTI"
+  short_description: "维护 Lab 的 MBTI 测评、结果逻辑与 AI 解读。"
+  default_prompt: "Use $vibe-lab-mbti to update the MBTI assistant in projects/vibe-lab."

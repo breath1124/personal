@@ -1,0 +1,4 @@
+interface:
+  display_name: "Vibe Lab Oracle"
+  short_description: "维护 Lab 的命理实验室、本地盘面与 AI 解读。"
+  default_prompt: "Use $vibe-lab-oracle to work on the oracle lab in projects/vibe-lab."

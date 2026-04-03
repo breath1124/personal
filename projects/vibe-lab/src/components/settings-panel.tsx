@@ -159,6 +159,7 @@ export function SettingsPanel() {
           <li>所有配置默认保存在浏览器本地，清空浏览器数据后会丢失。</li>
           <li>当前这是公开静态站，不会内置平台通用 Key；要做免配置 AI，需要接服务端代理。</li>
           <li>如果你想切换到其他兼容接口，只需要改 Base URL 和 Model。</li>
+          <li>基金助手、MBTI 助手和命理实验室共用这一套模型配置，各自再叠加不同的 AI 技能提示词。</li>
         </ul>
       </section>
     </div>

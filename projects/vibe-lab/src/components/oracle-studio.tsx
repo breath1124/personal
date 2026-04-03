@@ -1,7 +1,14 @@
 "use client";
 
+import Link from "next/link";
 import { type FormEvent, useEffect, useMemo, useState } from "react";
-import { ORACLE_PROFILE_KEY } from "@/lib/config";
+import {
+  ORACLE_AI_SKILLS,
+  type OracleAiSkillId,
+  getOracleAiSkill
+} from "@/lib/ai-skills";
+import { DEFAULT_AI_SETTINGS, AI_SETTINGS_KEY, ORACLE_PROFILE_KEY } from "@/lib/config";
+import { requestModelAnalysis } from "@/lib/openai";
 import {
   type BirthPrecision,
   type OracleDraft,
@@ -10,7 +17,7 @@ import {
   DEFAULT_ORACLE_DRAFT,
   buildOracleReading
 } from "@/lib/oracle";
-import { usePersistentState } from "@/lib/storage";
+import { readStorage, usePersistentState } from "@/lib/storage";
 
 const focusOptions: Array<{ value: OracleFocus; label: string }> = [
   { value: "career", label: "事业推进" },
@@ -46,6 +53,11 @@ export function OracleStudio() {
   );
   const [activated, setActivated] = useState(false);
   const [error, setError] = useState("");
+  const [aiError, setAiError] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiResponse, setAiResponse] = useState("");
+  const [aiSkillId, setAiSkillId] = useState<OracleAiSkillId>(ORACLE_AI_SKILLS[0].id);
+  const [aiQuestion, setAiQuestion] = useState<string>(ORACLE_AI_SKILLS[0].suggestedQuestion);
 
   useEffect(() => {
     if (!hydrated) return;
@@ -58,6 +70,7 @@ export function OracleStudio() {
     if (!activated || !draft.birthDate) return null;
     return buildOracleReading(draft);
   }, [activated, draft]);
+  const selectedAiSkill = getOracleAiSkill(aiSkillId);
 
   function updateDraft<K extends keyof OracleDraft>(key: K, value: OracleDraft[K]) {
     setDraft((current) => ({
@@ -82,6 +95,53 @@ export function OracleStudio() {
     setDraft(DEFAULT_ORACLE_DRAFT);
     setActivated(false);
     setError("");
+    setAiError("");
+    setAiResponse("");
+    setAiQuestion(ORACLE_AI_SKILLS[0].suggestedQuestion);
+    setAiSkillId(ORACLE_AI_SKILLS[0].id);
+  }
+
+  async function generateAiReadout() {
+    if (!result) {
+      setAiError("先生成实验盘，再让模型解读。");
+      return;
+    }
+
+    const settings = readStorage(AI_SETTINGS_KEY, DEFAULT_AI_SETTINGS);
+    if (!settings.apiKey) {
+      setAiError("当前公开站点不会内置平台 API Key；如需直接可用的 AI 解读，需要接服务端代理。");
+      return;
+    }
+
+    setAiLoading(true);
+    setAiError("");
+
+    try {
+      const content = await requestModelAnalysis(settings, [
+        {
+          role: "system",
+          content: selectedAiSkill.systemPrompt
+        },
+        {
+          role: "user",
+          content: JSON.stringify({
+            skill: {
+              id: selectedAiSkill.id,
+              label: selectedAiSkill.label,
+              description: selectedAiSkill.description
+            },
+            question: aiQuestion.trim() || draft.question.trim() || selectedAiSkill.suggestedQuestion,
+            draft,
+            result
+          })
+        }
+      ]);
+      setAiResponse(content);
+    } catch (analysisError) {
+      setAiError(analysisError instanceof Error ? analysisError.message : "AI 解读失败");
+    } finally {
+      setAiLoading(false);
+    }
   }
 
   return (
@@ -268,6 +328,72 @@ export function OracleStudio() {
               <strong>{result.confidenceLabel}</strong>
               <p>{result.phaseLabel}</p>
             </article>
+          </section>
+
+          <section className="panel-card">
+            <div className="section-heading section-heading--tight">
+              <div>
+                <p className="eyebrow">AI Oracle</p>
+                <h2>模型命理解读</h2>
+              </div>
+              <Link className="inline-link inline-link--subtle" href="/settings">
+                设置模型
+              </Link>
+            </div>
+
+            <div className="form-grid">
+              <label className="field">
+                <span>算命技能</span>
+                <select
+                  className="control"
+                  value={aiSkillId}
+                  onChange={(event) => setAiSkillId(event.target.value as OracleAiSkillId)}
+                >
+                  {ORACLE_AI_SKILLS.map((skill) => (
+                    <option key={skill.id} value={skill.id}>
+                      {skill.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <article className="subtle-card">
+                <h3>{selectedAiSkill.label}</h3>
+                <p>{selectedAiSkill.description}</p>
+              </article>
+            </div>
+
+            <label className="field field--full">
+              <span>你希望模型重点解读什么？</span>
+              <textarea
+                className="control control--textarea"
+                value={aiQuestion}
+                onChange={(event) => setAiQuestion(event.target.value)}
+              />
+            </label>
+            <p className="muted">默认提问：{selectedAiSkill.suggestedQuestion}</p>
+
+            <div className="button-row">
+              <button className="button" disabled={aiLoading} onClick={generateAiReadout} type="button">
+                {aiLoading ? "生成中..." : "生成 AI 命理解读"}
+              </button>
+              {aiError && <span className="callout callout--warn">{aiError}</span>}
+            </div>
+
+            {aiResponse ? (
+              <article className="markdown-card">
+                {aiResponse.split("\n").map((line, index) =>
+                  line.startsWith("## ") ? (
+                    <h3 key={`${line}-${index}`}>{line.replace(/^##\s*/, "")}</h3>
+                  ) : line.trim() ? (
+                    <p key={`${line}-${index}`}>{line}</p>
+                  ) : null
+                )}
+              </article>
+            ) : (
+              <p className="muted">
+                模型会结合你的实验盘、本地规则结果和当前问题，按所选技能给出更细的命理解读。
+              </p>
+            )}
           </section>
 
           <section className="grid two-up">

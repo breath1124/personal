@@ -1,0 +1,4 @@
+interface:
+  display_name: "Vibe Lab Fund"
+  short_description: "维护 Lab 的基金助手、数据抓取与 AI 研判。"
+  default_prompt: "Use $vibe-lab-fund to extend the fund assistant in projects/vibe-lab."

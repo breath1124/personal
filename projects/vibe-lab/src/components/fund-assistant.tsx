@@ -2,6 +2,11 @@
 
 import Link from "next/link";
 import { type FormEvent, startTransition, useEffect, useMemo, useState } from "react";
+import {
+  FUND_AI_SKILLS,
+  type FundAiSkillId,
+  getFundAiSkill
+} from "@/lib/ai-skills";
 import { DEFAULT_AI_SETTINGS, DEFAULT_HOLDING_DRAFT, AI_SETTINGS_KEY, HOLDINGS_KEY } from "@/lib/config";
 import { buildHoldingSections, buildPortfolioBrief } from "@/lib/finance/rules";
 import { loadFundSnapshot, loadStockNotices } from "@/lib/finance/browser";
@@ -31,11 +36,13 @@ export function FundAssistant({ marketBrief }: { marketBrief: MarketBrief }) {
   const [notices, setNotices] = useState<Record<string, NoticeItem[]>>({});
   const [loadingCodes, setLoadingCodes] = useState<string[]>([]);
   const [error, setError] = useState<string>("");
-  const [aiQuestion, setAiQuestion] = useState(
-    "这组持仓现在更适合继续拿、逐步加仓还是先控制仓位？请给我一个行动框架。"
+  const [aiQuestion, setAiQuestion] = useState<string>(
+    FUND_AI_SKILLS[0].suggestedQuestion
   );
   const [aiLoading, setAiLoading] = useState(false);
   const [aiResponse, setAiResponse] = useState("");
+  const [aiSkillId, setAiSkillId] = useState<FundAiSkillId>(FUND_AI_SKILLS[0].id);
+  const selectedAiSkill = getFundAiSkill(aiSkillId);
 
   useEffect(() => {
     if (!hydrated) return;
@@ -168,6 +175,11 @@ export function FundAssistant({ marketBrief }: { marketBrief: MarketBrief }) {
 
     try {
       const payload = {
+        skill: {
+          id: selectedAiSkill.id,
+          label: selectedAiSkill.label,
+          description: selectedAiSkill.description
+        },
         portfolioBrief,
         holdings: holdings.map((holding) => ({
           ...holding,
@@ -175,14 +187,13 @@ export function FundAssistant({ marketBrief }: { marketBrief: MarketBrief }) {
           notices: notices[holding.fundCode] ?? []
         })),
         marketBrief,
-        question: aiQuestion
+        question: aiQuestion.trim() || selectedAiSkill.suggestedQuestion
       };
 
       const content = await requestModelAnalysis(settings, [
         {
           role: "system",
-          content:
-            "你是一位克制、专业、注重风险边界的基金投研助手。请用简体中文输出 Markdown，严格使用这四个标题：## 一句话判断、## 核心依据、## 风险提醒、## 接下来怎么做。不要给绝对收益承诺，不要假装知道实时行情。"
+          content: selectedAiSkill.systemPrompt
         },
         {
           role: "user",
@@ -486,6 +497,27 @@ export function FundAssistant({ marketBrief }: { marketBrief: MarketBrief }) {
               <span className="muted">读取本地 API 配置</span>
             </div>
 
+            <div className="form-grid">
+              <label className="field">
+                <span>分析技能</span>
+                <select
+                  className="control"
+                  value={aiSkillId}
+                  onChange={(event) => setAiSkillId(event.target.value as FundAiSkillId)}
+                >
+                  {FUND_AI_SKILLS.map((skill) => (
+                    <option key={skill.id} value={skill.id}>
+                      {skill.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <article className="subtle-card">
+                <h3>{selectedAiSkill.label}</h3>
+                <p>{selectedAiSkill.description}</p>
+              </article>
+            </div>
+
             <label className="field field--full">
               <span>你想让模型重点回答什么？</span>
               <textarea
@@ -494,6 +526,7 @@ export function FundAssistant({ marketBrief }: { marketBrief: MarketBrief }) {
                 onChange={(event) => setAiQuestion(event.target.value)}
               />
             </label>
+            <p className="muted">默认提问：{selectedAiSkill.suggestedQuestion}</p>
 
             <div className="button-row">
               <button className="button" disabled={aiLoading} onClick={generateAiReport} type="button">
@@ -515,7 +548,7 @@ export function FundAssistant({ marketBrief }: { marketBrief: MarketBrief }) {
                 )}
               </article>
             ) : (
-              <p className="muted">模型会结合你的持仓、基金数据、公告摘要和今日市场简报输出更深的判断。</p>
+              <p className="muted">模型会结合你的持仓、基金数据、公告摘要和今日市场简报，按所选技能输出更深的判断。</p>
             )}
           </article>
 

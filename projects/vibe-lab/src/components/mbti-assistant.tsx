@@ -2,6 +2,11 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import {
+  MBTI_AI_SKILLS,
+  type MbtiAiSkillId,
+  getMbtiAiSkill
+} from "@/lib/ai-skills";
 import { DEFAULT_AI_SETTINGS, AI_SETTINGS_KEY } from "@/lib/config";
 import { MBTI_QUESTIONS, buildMbtiReport, scoreMbti } from "@/lib/mbti";
 import { requestModelAnalysis } from "@/lib/openai";
@@ -17,8 +22,10 @@ export function MbtiAssistant() {
   const [error, setError] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
   const [aiResponse, setAiResponse] = useState("");
+  const [aiSkillId, setAiSkillId] = useState<MbtiAiSkillId>(MBTI_AI_SKILLS[0].id);
 
   const completedCount = Object.keys(answers).length;
+  const selectedAiSkill = getMbtiAiSkill(aiSkillId);
 
   function updateAnswer(questionId: string, score: number) {
     setAnswers((current) => ({
@@ -57,15 +64,20 @@ export function MbtiAssistant() {
       const content = await requestModelAnalysis(settings, [
         {
           role: "system",
-          content:
-            "你是一位冷静、清楚、不过度神化人格类型的职业沟通教练。请用简体中文输出 Markdown，使用这四个标题：## 类型解读、## 当前场景的优势、## 可能的盲区、## 实际建议。"
+          content: selectedAiSkill.systemPrompt
         },
         {
           role: "user",
           content: JSON.stringify({
+            skill: {
+              id: selectedAiSkill.id,
+              label: selectedAiSkill.label,
+              description: selectedAiSkill.description
+            },
             focus,
             context,
-            result
+            result,
+            localReport: sections
           })
         }
       ]);
@@ -206,6 +218,27 @@ export function MbtiAssistant() {
               </Link>
             </div>
 
+            <div className="form-grid">
+              <label className="field">
+                <span>AI 技能</span>
+                <select
+                  className="control"
+                  value={aiSkillId}
+                  onChange={(event) => setAiSkillId(event.target.value as MbtiAiSkillId)}
+                >
+                  {MBTI_AI_SKILLS.map((skill) => (
+                    <option key={skill.id} value={skill.id}>
+                      {skill.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <article className="subtle-card">
+                <h3>{selectedAiSkill.label}</h3>
+                <p>{selectedAiSkill.description}</p>
+              </article>
+            </div>
+
             <div className="button-row">
               <button className="button" disabled={aiLoading} onClick={generateAiReadout} type="button">
                 {aiLoading ? "生成中..." : "生成 AI 解读"}
@@ -224,7 +257,7 @@ export function MbtiAssistant() {
               </article>
             ) : (
               <p className="muted">
-                AI 会结合你的类型结果、当前场景和关注问题，输出一版更具体的沟通与工作建议。
+                AI 会结合你的类型结果、本地结构化报告和当前问题，按所选技能输出更具体的建议。
               </p>
             )}
           </section>
