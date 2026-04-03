@@ -151,6 +151,10 @@ textarea {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.lab-home-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .hero-card,
 .panel-card,
 .notice-item {
@@ -281,6 +285,25 @@ textarea {
 
 .muted {
   color: var(--muted);
+}
+
+.app-card__chips {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--muted);
+  font-size: 13px;
 }
 
 .button,
@@ -417,6 +440,129 @@ textarea {
 .fund-layout {
   grid-template-columns: minmax(0, 1.1fr) minmax(340px, 0.9fr);
   align-items: start;
+}
+
+.oracle-layout {
+  grid-template-columns: minmax(0, 1.08fr) minmax(340px, 0.92fr);
+  align-items: start;
+}
+
+.oracle-summary-card {
+  display: grid;
+  gap: 18px;
+}
+
+.oracle-summary {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.8;
+  color: var(--text);
+}
+
+.oracle-placeholder {
+  display: grid;
+  gap: 18px;
+  align-content: center;
+  min-height: 100%;
+}
+
+.pillar-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.pillar-card {
+  padding: 18px;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  background: var(--surface-strong);
+}
+
+.pillar-card span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.pillar-card strong {
+  display: block;
+  margin-top: 10px;
+  font-size: 34px;
+  letter-spacing: -0.08em;
+}
+
+.pillar-card p {
+  margin: 8px 0 0;
+}
+
+.element-row {
+  display: grid;
+  gap: 10px;
+  padding: 16px 18px;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  background: var(--surface-strong);
+}
+
+.element-row__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.element-row__head strong {
+  font-size: 18px;
+  letter-spacing: -0.04em;
+}
+
+.element-track {
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+}
+
+.element-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+}
+
+.element-fill--positive {
+  background: linear-gradient(90deg, #2563eb, #4f46e5);
+}
+
+.element-fill--calm {
+  background: linear-gradient(90deg, #94a3b8, #64748b);
+}
+
+.element-fill--watch {
+  background: linear-gradient(90deg, #f59e0b, #d97706);
+}
+
+.oracle-meta-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.oracle-domain-list {
+  display: grid;
+  gap: 12px;
+}
+
+.oracle-domain-card {
+  padding: 18px;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  background: var(--surface-strong);
+  display: grid;
+  gap: 10px;
+}
+
+.oracle-domain-card h3 {
+  margin: 0;
 }
 
 .holdings-list {
@@ -855,10 +1001,14 @@ textarea {
   .reaction-module-grid,
   .stats-grid,
   .stats-grid--mini,
+  .lab-home-grid,
   .form-grid,
   .fund-layout,
+  .oracle-layout,
+  .oracle-meta-grid,
   .reaction-layout,
   .reaction-pad,
+  .pillar-grid,
   .answer-row {
     grid-template-columns: 1fr;
   }

@@ -67,6 +67,22 @@ function outcomeLabel(outcome: ReactionOutcome) {
   }
 }
 
+function getWaitingStimulus(stimulus: RuntimeStimulus): RuntimeStimulus {
+  if (stimulus.taskId === "flash") {
+    return stimulus;
+  }
+
+  return {
+    ...stimulus,
+    visualLabel: "…",
+    visualSubLabel:
+      stimulus.taskId === "choice" ? "方向尚未出现" : "目标信号尚未出现",
+    visualKind: "orb",
+    visualTone: "neutral",
+    directionKey: undefined
+  };
+}
+
 function buildStimulus(task: ReactionTaskDefinition): RuntimeStimulus {
   if (task.id === "flash") {
     return {
@@ -140,6 +156,8 @@ export function ReactionLab() {
   const analysis = useMemo(() => analyzeReactionSuite(results), [results]);
   const currentTaskAnalysis =
     analysis.tasks.find((task) => task.taskId === currentTask.id) ?? analysis.tasks[taskIndex];
+  const renderedStimulus =
+    stimulus && phase === "waiting" ? getWaitingStimulus(stimulus) : stimulus;
 
   function clearTimers() {
     if (triggerTimerRef.current) {
@@ -233,6 +251,7 @@ export function ReactionLab() {
   function finalizeTrial(input: ReactionInput | null, forcedOutcome?: ReactionOutcome) {
     const activeStimulus = runtimeStimulusRef.current;
     if (!activeStimulus) return;
+    if (!forcedOutcome && phase !== "waiting" && phase !== "active") return;
 
     clearTimers();
 
@@ -397,22 +416,22 @@ export function ReactionLab() {
               </div>
             )}
 
-            {(phase === "waiting" || phase === "active" || phase === "feedback") && stimulus && (
+            {(phase === "waiting" || phase === "active" || phase === "feedback") && renderedStimulus && (
               <div className="reaction-active-stack">
                 <button
-                  className={`reaction-target reaction-target--${stimulus.visualKind} reaction-target--${phase} reaction-target--${stimulus.visualTone}`}
+                  className={`reaction-target reaction-target--${renderedStimulus.visualKind} reaction-target--${phase} reaction-target--${renderedStimulus.visualTone}`}
                   onClick={() => finalizeTrial("tap")}
                   type="button"
                 >
-                  <span className="reaction-target__label">{stimulus.visualLabel}</span>
-                  <span className="reaction-target__sub">{stimulus.visualSubLabel}</span>
+                  <span className="reaction-target__label">{renderedStimulus.visualLabel}</span>
+                  <span className="reaction-target__sub">{renderedStimulus.visualSubLabel}</span>
                 </button>
 
                 {currentTask.id === "choice" && (
                   <div className="reaction-pad">
                     {DIRECTION_STIMULI.map((item) => (
                       <button
-                        className={`reaction-pad__key${stimulus.directionKey === item.key ? " is-highlight" : ""}`}
+                        className={`reaction-pad__key${renderedStimulus.directionKey === item.key ? " is-highlight" : ""}`}
                         key={item.key}
                         onClick={() => finalizeTrial(item.key)}
                         type="button"

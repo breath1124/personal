@@ -15,9 +15,9 @@ export default function HomePage() {
     <AppShell
       activePath="/"
       title="把实验项目做成真正可用的界面"
-      description="基金助手整理投资判断，MBTI 助手输出结构化报告，反应力实验室则把即时表现拆成可读的数据。"
+      description="基金助手、MBTI、命理实验室和反应力实验室都做成可直接上手的工具，而不是只看一眼的演示页。"
     >
-      <section className="grid three-up">
+      <section className="grid lab-home-grid">
         <article className="hero-card">
           <p className="eyebrow">Fund Copilot</p>
           <h2>基金助手</h2>
@@ -32,6 +32,14 @@ export default function HomePage() {
           <p>不是随手玩玩的 12 题测试，而是更完整的自评和工作沟通报告。</p>
           <Link className="inline-link" href="/mbti">
             开始测评
+          </Link>
+        </article>
+        <article className="hero-card">
+          <p className="eyebrow">Bazi x Ziwei</p>
+          <h2>命理实验室</h2>
+          <p>八字实验盘、紫微斗数镜像与现实校验合在一起，不只讲你像谁，也给出当下可执行的动作。</p>
+          <Link className="inline-link" href="/oracle">
+            打开实验室
           </Link>
         </article>
         <article className="hero-card">

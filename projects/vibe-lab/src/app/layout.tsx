@@ -10,7 +10,7 @@ const manrope = Manrope({
 
 export const metadata: Metadata = {
   title: "CY Lab",
-  description: "更成熟的 Vibe Coding 应用区，包含基金助手、MBTI 助手与反应力实验室。"
+  description: "更成熟的 Vibe Coding 应用区，包含基金助手、MBTI、命理实验室与反应力实验室。"
 };
 
 export default function RootLayout({
