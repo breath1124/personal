@@ -1,0 +1,399 @@
+<section class="tool-panel" data-tool-root="fund">
+  <div class="tool-panel__intro">
+    <p>
+      这个工具不会告诉你某只基金现在一定该买还是该卖，它的作用是把你常见会忽略的变量放到一个结构化框架里，让动作更有依据。
+    </p>
+  </div>
+
+  <form class="assistant-form" data-fund-form>
+    <div class="input-grid">
+      <div class="field">
+        <label for="fund-type">基金类型</label>
+        <select id="fund-type" name="fundType" class="control">
+          <option value="broad_index">宽基指数</option>
+          <option value="sector_theme">行业/主题基金</option>
+          <option value="overseas">海外/全球资产</option>
+          <option value="defensive">债券/黄金/防守型资产</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="position">当前仓位占总资产比例 (%)</label>
+        <input
+          id="position"
+          name="position"
+          class="control"
+          type="number"
+          min="0"
+          max="100"
+          value="30"
+        />
+      </div>
+
+      <div class="field">
+        <label for="target-position">你的目标仓位 (%)</label>
+        <input
+          id="target-position"
+          name="targetPosition"
+          class="control"
+          type="number"
+          min="0"
+          max="100"
+          value="40"
+        />
+      </div>
+
+      <div class="field">
+        <label for="profit-loss">当前盈亏幅度 (%)</label>
+        <input
+          id="profit-loss"
+          name="profitLoss"
+          class="control"
+          type="number"
+          min="-90"
+          max="300"
+          value="0"
+        />
+      </div>
+
+      <div class="field">
+        <label for="valuation">你对当前估值位置的判断</label>
+        <select id="valuation" name="valuation" class="control">
+          <option value="low">偏低</option>
+          <option value="medium" selected>中性</option>
+          <option value="high">偏高</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="thesis">原先买入逻辑现在是否还成立？</label>
+        <select id="thesis" name="thesis" class="control">
+          <option value="intact">基本成立</option>
+          <option value="unclear">部分动摇</option>
+          <option value="broken">已经破坏</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="cash-months">紧急备用金可覆盖几个月支出？</label>
+        <input
+          id="cash-months"
+          name="cashMonths"
+          class="control"
+          type="number"
+          min="0"
+          max="36"
+          value="6"
+        />
+      </div>
+
+      <div class="field">
+        <label for="liquidity">未来半年是否有明确用钱需求？</label>
+        <select id="liquidity" name="liquidityNeed" class="control">
+          <option value="none">没有</option>
+          <option value="six_months">半年内可能会用</option>
+          <option value="three_months">三个月内大概率会用</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="risk">你的风险承受偏好</label>
+        <select id="risk" name="riskLevel" class="control">
+          <option value="low">偏低</option>
+          <option value="medium" selected>中等</option>
+          <option value="high">偏高</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="holding-months">这笔持仓已持有多久（月）</label>
+        <input
+          id="holding-months"
+          name="holdingMonths"
+          class="control"
+          type="number"
+          min="0"
+          max="240"
+          value="12"
+        />
+      </div>
+    </div>
+
+    <div class="tool-actions">
+      <button class="button" type="submit">生成买卖建议</button>
+      <button class="button button--ghost" type="reset">恢复默认值</button>
+    </div>
+  </form>
+
+  <div class="result-panel" data-fund-result aria-live="polite">
+    <p class="result-placeholder">提交后会显示你的仓位诊断、动作建议和风险提醒。</p>
+  </div>
+</section>
+
+<script is:inline>
+  const root = document.querySelector('[data-tool-root="fund"]');
+
+  if (root) {
+    const form = root.querySelector("[data-fund-form]");
+    const result = root.querySelector("[data-fund-result]");
+
+    function clamp(value, min, max) {
+      return Math.min(Math.max(value, min), max);
+    }
+
+    function renderRecommendation(payload) {
+      result.innerHTML = `
+        <div class="result-panel__header">
+          <div>
+            <p class="eyebrow">结构化判断结果</p>
+            <h2>${payload.title}</h2>
+          </div>
+          <span class="status-badge status-badge--live">${payload.tag}</span>
+        </div>
+        <p class="result-summary">${payload.summary}</p>
+        <div class="metric-strip metric-strip--compact">
+          ${payload.scores
+            .map(
+              (item) => `
+                <div class="metric-card">
+                  <span>${item.label}</span>
+                  <strong>${item.value}</strong>
+                  <p>${item.caption}</p>
+                </div>
+              `
+            )
+            .join("")}
+        </div>
+        <div class="result-copy">
+          <h3>建议动作</h3>
+          <ul class="app-points">
+            ${payload.actions.map((item) => `<li>${item}</li>`).join("")}
+          </ul>
+          <h3>判断依据</h3>
+          <ul class="app-points">
+            ${payload.reasons.map((item) => `<li>${item}</li>`).join("")}
+          </ul>
+          <h3>风险提醒</h3>
+          <ul class="app-points">
+            ${payload.cautions.map((item) => `<li>${item}</li>`).join("")}
+          </ul>
+        </div>
+      `;
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const formData = new FormData(form);
+      const fundType = formData.get("fundType");
+      const position = clamp(Number(formData.get("position")), 0, 100);
+      const targetPosition = clamp(Number(formData.get("targetPosition")), 0, 100);
+      const profitLoss = Number(formData.get("profitLoss"));
+      const valuation = formData.get("valuation");
+      const thesis = formData.get("thesis");
+      const cashMonths = Math.max(Number(formData.get("cashMonths")), 0);
+      const liquidityNeed = formData.get("liquidityNeed");
+      const riskLevel = formData.get("riskLevel");
+      const holdingMonths = Math.max(Number(formData.get("holdingMonths")), 0);
+
+      const gap = targetPosition - position;
+      let buyScore = 0;
+      let holdScore = 0;
+      let sellScore = 0;
+      const reasons = [];
+      const cautions = [];
+
+      if (thesis === "broken") {
+        sellScore += 6;
+        reasons.push("原先买入逻辑已经破坏，优先纠错比等待回本更重要。");
+      } else if (thesis === "unclear") {
+        sellScore += 2;
+        holdScore += 1;
+        reasons.push("买入逻辑已经松动，适合先缩小敞口或继续观察。");
+      } else {
+        buyScore += 1;
+        holdScore += 1;
+        reasons.push("原先买入逻辑仍基本成立，可以把注意力放回仓位和节奏。");
+      }
+
+      if (liquidityNeed === "three_months") {
+        sellScore += 4;
+        reasons.push("三个月内有明确用钱需求，应优先保证流动性。");
+      } else if (liquidityNeed === "six_months") {
+        sellScore += 2;
+        cautions.push("半年内可能有资金需求，动作上宜保守，不适合重仓加码。");
+      }
+
+      if (cashMonths < 3) {
+        sellScore += 2;
+        cautions.push("紧急备用金不足 3 个月，先补现金垫再谈进攻更稳妥。");
+      } else if (cashMonths >= 6) {
+        buyScore += 1;
+      }
+
+      if (gap >= 10) {
+        buyScore += 3;
+        reasons.push(`当前仓位比目标仓位低 ${gap.toFixed(0)}%，有加仓空间。`);
+      } else if (gap >= 5) {
+        buyScore += 2;
+        reasons.push("当前仓位略低于目标仓位，可以考虑分批补齐。");
+      } else if (gap <= -10) {
+        sellScore += 3;
+        reasons.push(`当前仓位比目标仓位高 ${Math.abs(gap).toFixed(0)}%，需要考虑回到配置线。`);
+      } else if (gap <= -5) {
+        sellScore += 2;
+        reasons.push("当前仓位略高于目标仓位，适合考虑小幅回撤仓位。");
+      } else {
+        holdScore += 2;
+      }
+
+      if (profitLoss <= -20 && thesis === "intact") {
+        buyScore += 2;
+        reasons.push("亏损较深但逻辑仍在，更适合考虑分批而不是一次性补仓。");
+      } else if (profitLoss <= -10 && thesis === "intact") {
+        buyScore += 1;
+      } else if (profitLoss >= 25) {
+        sellScore += 2;
+        reasons.push("已有较明显浮盈，至少需要评估止盈和再平衡。");
+      } else if (profitLoss >= 12) {
+        sellScore += 1;
+      } else {
+        holdScore += 1;
+      }
+
+      if (valuation === "low") {
+        buyScore += 2;
+        reasons.push("你判断当前估值偏低，买入赔率相对更好。");
+      } else if (valuation === "medium") {
+        holdScore += 1;
+      } else if (valuation === "high") {
+        sellScore += 2;
+        reasons.push("你判断当前估值偏高，更适合保守处理。");
+      }
+
+      if (fundType === "sector_theme") {
+        if (position > 20) {
+          sellScore += 2;
+          cautions.push("行业/主题基金波动通常更大，单项仓位过高时需要更谨慎。");
+        }
+        if (riskLevel === "low") {
+          sellScore += 2;
+          cautions.push("你的风险偏好偏低，但当前是高波动品类，适合主动降风险。");
+        }
+      }
+
+      if (fundType === "broad_index" && valuation === "low") {
+        buyScore += 1;
+      }
+
+      if (fundType === "overseas" && valuation === "high") {
+        sellScore += 1;
+        cautions.push("海外资产还要额外考虑汇率和市场节奏，不宜单次下重手。");
+      }
+
+      if (fundType === "defensive") {
+        holdScore += 1;
+        if (profitLoss >= 10) {
+          sellScore += 1;
+        }
+      }
+
+      if (holdingMonths < 6 && profitLoss < 0 && thesis === "intact") {
+        holdScore += 1;
+        cautions.push("持有时间还短，若逻辑未变，不必因为短期波动立刻重动作。");
+      }
+
+      if (holdingMonths > 24 && profitLoss > 20) {
+        sellScore += 1;
+        reasons.push("这笔持仓周期较长且已有不错收益，适合重新审视配置权重。");
+      }
+
+      let title = "继续持有并观察";
+      let tag = "偏持有";
+      let summary =
+        "当前信号没有明显偏向单边操作，适合先守住仓位纪律，继续等待更清晰的价格或逻辑变化。";
+      let actions = [
+        "维持当前仓位，下一次只在估值或逻辑出现明显变化时再行动。",
+        "提前写下你的加仓条件和减仓条件，避免情绪驱动。"
+      ];
+
+      if (sellScore >= buyScore + 3 && sellScore >= holdScore + 2) {
+        title = "偏向卖出或主动降仓";
+        tag = "偏卖出";
+        summary =
+          "你的流动性、仓位或逻辑层面已经出现较强减仓信号，更重要的是先把风险和现金流收回来。";
+        actions = [
+          `优先把仓位从 ${position.toFixed(0)}% 向目标仓位 ${targetPosition.toFixed(0)}% 收缩。`,
+          "如果不确定一次减多少，可以分 2-3 次处理，每次减去当前仓位的 10%-20%。",
+          "减仓后把资金先留在现金或低波动资产里，不必急着马上换仓。"
+        ];
+      } else if (sellScore > buyScore && sellScore >= holdScore) {
+        title = "考虑分批止盈或小幅减仓";
+        tag = "偏减仓";
+        summary =
+          "目前不是强烈清仓信号，但已有理由把仓位往更舒服的位置收一收。";
+        actions = [
+          "优先处理超出目标仓位的部分，而不是凭感觉大幅清仓。",
+          "如果是盈利较多的持仓，可以先落袋一部分，保留剩余仓位继续观察。",
+          "后续若估值继续抬升或逻辑继续变差，再执行第二步减仓。"
+        ];
+      } else if (buyScore >= sellScore + 3 && buyScore >= holdScore + 2) {
+        title = "偏向买入或分批加仓";
+        tag = "偏买入";
+        summary =
+          "当前更像是一个可以考虑逐步提高仓位的区间，但动作仍应分批完成，而不是一次打满。";
+        actions = [
+          `当前与目标仓位相差 ${Math.max(gap, 0).toFixed(0)}%，建议分 2-4 次向目标仓位靠近。`,
+          "优先把单次加仓控制在目标仓位差额的 25%-40%，避免在单一天点位重仓决策。",
+          "每次加仓后观察逻辑是否仍成立，而不是只盯净值波动。"
+        ];
+      } else if (buyScore > sellScore && buyScore >= holdScore) {
+        title = "考虑小步加仓";
+        tag = "偏加仓";
+        summary =
+          "你有一定加仓理由，但信号还不够极端，更适合小步试探而不是快速梭哈。";
+        actions = [
+          "先小幅补仓一次，确认后续估值和逻辑仍匹配，再决定是否继续。",
+          "如果你是按月定投，也可以把这次判断用于临时提高定投力度，而不是一次性买入。"
+        ];
+      }
+
+      if (cautions.length === 0) {
+        cautions.push("该结果不使用实时行情，也不替代你自己的资产配置计划。");
+      }
+
+      renderRecommendation({
+        title,
+        tag,
+        summary,
+        actions,
+        reasons: reasons.slice(0, 5),
+        cautions: cautions.slice(0, 4),
+        scores: [
+          {
+            label: "买入信号",
+            value: buyScore,
+            caption: "仓位缺口、估值、现金情况"
+          },
+          {
+            label: "持有信号",
+            value: holdScore,
+            caption: "逻辑稳定、等待更清晰机会"
+          },
+          {
+            label: "卖出信号",
+            value: sellScore,
+            caption: "流动性、过重仓位、逻辑变化"
+          }
+        ]
+      });
+    });
+
+    form.addEventListener("reset", () => {
+      window.setTimeout(() => {
+        result.innerHTML =
+          '<p class="result-placeholder">提交后会显示你的仓位诊断、动作建议和风险提醒。</p>';
+      }, 0);
+    });
+  }
+</script>

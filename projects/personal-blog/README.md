@@ -1,10 +1,16 @@
 # personal-blog（Astro）
 
-一个面向 GitHub Pages 的静态个人博客站点骨架（SEO：`sitemap.xml` / `robots.txt` / `rss.xml`）。
+一个面向 GitHub Pages 的静态个人网站，当前包含两条主入口：
+
+- 博客：长期内容沉淀
+- Vibe Coding 实验室：可直接打开使用的小工具和界面项目
 
 ## 功能
 
 - 文章：列表页、详情页（Content Collections）
+- 门户首页：博客 / 实验室双入口
+- 实验室：`/vibe/` 项目列表页
+- 工具页：`/vibe/<slug>/`，当前包含 MBTI 测试助手、基金买入卖出助手
 - 标签：`/tags/`、`/tags/<tag>/`
 - 分类：`/categories/`、`/categories/<category>/`
 - 搜索：`/search/`（构建时生成 `search.json`，前端本地检索）
@@ -56,6 +62,20 @@ npm run preview
 ## 自定义站点信息
 
 编辑：`src/config/site.ts`
+
+## 新增一个实验室项目
+
+当前实验室区域按“注册表 + 独立组件”的方式组织，便于后续继续扩展界面型项目。
+
+1. 在 `src/config/hub.ts` 的 `LAB_APPS` 里注册新项目元数据。
+2. 在 `src/components/vibe/` 下新增对应的 Astro 组件。
+3. 在 `src/pages/vibe/[slug].astro` 中把 `slug` 映射到新组件。
+
+完成后，新项目会自动出现在：
+
+- 首页实验室精选
+- `/vibe/` 项目列表页
+- 对应详情路由
 
 ## 自定义域名（可选）
 

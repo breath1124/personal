@@ -1,0 +1,352 @@
+---
+const MBTI_QUESTIONS = [
+  {
+    axis: "EI",
+    prompt: "刚进入一个新的团队或活动时，你通常会怎么启动？",
+    leftLabel: "先和人互动，边聊边找感觉",
+    rightLabel: "先观察环境，心里有谱后再加入"
+  },
+  {
+    axis: "SN",
+    prompt: "面对一个新想法时，你更先注意什么？",
+    leftLabel: "它落地要哪些步骤和资源",
+    rightLabel: "它未来可能延展出哪些方向"
+  },
+  {
+    axis: "TF",
+    prompt: "朋友来找你讨论难题时，你更自然的反应是？",
+    leftLabel: "先帮他梳理事实和解决方案",
+    rightLabel: "先感受他的状态和情绪需求"
+  },
+  {
+    axis: "JP",
+    prompt: "假期出行前，你更倾向于哪种安排方式？",
+    leftLabel: "先定下主要路线和关键节点",
+    rightLabel: "保留弹性，走到哪算哪"
+  },
+  {
+    axis: "EI",
+    prompt: "忙完一整天后，什么方式更能让你恢复能量？",
+    leftLabel: "找人聊天、出去走走、切换环境",
+    rightLabel: "安静独处，整理思路或沉浸兴趣"
+  },
+  {
+    axis: "SN",
+    prompt: "在阅读一篇文章或论文时，你更常抓住哪一类信息？",
+    leftLabel: "定义、结构、例子和证据",
+    rightLabel: "核心观点、模式和背后趋势"
+  },
+  {
+    axis: "TF",
+    prompt: "做选择时，什么更容易推动你下决定？",
+    leftLabel: "哪一个更合理、更有效率",
+    rightLabel: "哪一个更符合人和关系的感受"
+  },
+  {
+    axis: "JP",
+    prompt: "项目推进到一半时出现新机会，你通常会？",
+    leftLabel: "先看是否影响原计划，再决定要不要改",
+    rightLabel: "如果更有意思或更有效，愿意随时调整"
+  },
+  {
+    axis: "EI",
+    prompt: "在讨论会上，你更接近哪种状态？",
+    leftLabel: "想到就会说出来，靠交流澄清想法",
+    rightLabel: "通常会先想清楚，再挑重点表达"
+  },
+  {
+    axis: "SN",
+    prompt: "别人描述问题时，你更在意哪部分？",
+    leftLabel: "具体发生了什么、细节是否一致",
+    rightLabel: "这个问题说明了什么、更深层的模式"
+  },
+  {
+    axis: "TF",
+    prompt: "当团队里出现分歧时，你更可能站在哪一侧？",
+    leftLabel: "先统一标准，讨论最优解",
+    rightLabel: "先稳定关系，让大家能继续合作"
+  },
+  {
+    axis: "JP",
+    prompt: "你对待待办事项更像以下哪种？",
+    leftLabel: "喜欢收口，完成一个再推进下一个",
+    rightLabel: "喜欢并行探索，临近节点再集中收束"
+  }
+] as const;
+
+const MBTI_TITLES = {
+  INTJ: "系统策划者",
+  INTP: "逻辑架构师",
+  ENTJ: "推进指挥者",
+  ENTP: "点子实验者",
+  INFJ: "洞察协调者",
+  INFP: "价值探索者",
+  ENFJ: "关系驱动者",
+  ENFP: "灵感连接者",
+  ISTJ: "秩序执行者",
+  ISFJ: "稳定支持者",
+  ESTJ: "结果推进者",
+  ESFJ: "氛围组织者",
+  ISTP: "问题拆解者",
+  ISFP: "体验感知者",
+  ESTP: "行动试错者",
+  ESFP: "现场调动者"
+} as const;
+---
+
+<section class="tool-panel" data-tool-root="mbti">
+  <div class="tool-panel__intro">
+    <p>
+      这不是严格的心理测量量表，而是一个偏实用的快速自测工具。建议你按第一直觉答题，不要过度推演“理想中的自己”。
+    </p>
+  </div>
+
+  <form class="assistant-form" data-mbti-form>
+    <div class="field">
+      <label for="mbti-focus">你更想把这次测试结果用在哪个场景？</label>
+      <select id="mbti-focus" name="focus" class="control">
+        <option value="work">工作方式</option>
+        <option value="team">团队协作</option>
+        <option value="communication">沟通表达</option>
+      </select>
+    </div>
+
+    <div class="question-stack">
+      {MBTI_QUESTIONS.map((question, index) => (
+        <fieldset class="question-card" data-axis={question.axis}>
+          <legend>
+            <span class="question-card__index">Q{index + 1}</span>
+            {question.prompt}
+          </legend>
+
+          <div class="question-card__poles">
+            <span>{question.leftLabel}</span>
+            <span>{question.rightLabel}</span>
+          </div>
+
+          <div class="choice-grid">
+            <label class="choice-pill">
+              <input type="radio" name={`q-${index}`} value="-2" />
+              <span>明显左侧</span>
+            </label>
+            <label class="choice-pill">
+              <input type="radio" name={`q-${index}`} value="-1" />
+              <span>略偏左侧</span>
+            </label>
+            <label class="choice-pill">
+              <input type="radio" name={`q-${index}`} value="0" />
+              <span>差不多</span>
+            </label>
+            <label class="choice-pill">
+              <input type="radio" name={`q-${index}`} value="1" />
+              <span>略偏右侧</span>
+            </label>
+            <label class="choice-pill">
+              <input type="radio" name={`q-${index}`} value="2" />
+              <span>明显右侧</span>
+            </label>
+          </div>
+        </fieldset>
+      ))}
+    </div>
+
+    <div class="tool-actions">
+      <button class="button" type="submit">生成我的 MBTI 结果</button>
+      <button class="button button--ghost" type="reset">清空重测</button>
+    </div>
+  </form>
+
+  <div class="result-panel" data-mbti-result aria-live="polite">
+    <p class="result-placeholder">完成全部题目后，这里会显示你的类型倾向、维度解释和实用建议。</p>
+  </div>
+</section>
+
+<script
+  is:inline
+  define:vars={{
+    mbtiTitles: MBTI_TITLES
+  }}
+>
+  const root = document.querySelector('[data-tool-root="mbti"]');
+
+  if (root) {
+    const form = root.querySelector("[data-mbti-form]");
+    const result = root.querySelector("[data-mbti-result]");
+    const axes = {
+      EI: {
+        left: "E",
+        right: "I",
+        label: "能量来源",
+        explain: {
+          E: "你更容易通过互动、讨论和外界反馈来激活状态。",
+          I: "你更容易通过独处、整理和内部推演来恢复与聚焦。"
+        }
+      },
+      SN: {
+        left: "S",
+        right: "N",
+        label: "信息加工",
+        explain: {
+          S: "你更相信事实、细节和可验证的信息。",
+          N: "你更容易从模式、趋势和可能性里抓重点。"
+        }
+      },
+      TF: {
+        left: "T",
+        right: "F",
+        label: "决策方式",
+        explain: {
+          T: "你更习惯先看逻辑、一致性和效率。",
+          F: "你更习惯先看关系、感受和价值取向。"
+        }
+      },
+      JP: {
+        left: "J",
+        right: "P",
+        label: "行动节奏",
+        explain: {
+          J: "你更喜欢提前收口、明确计划和掌控推进感。",
+          P: "你更喜欢保持弹性、边探索边调整。"
+        }
+      }
+    };
+
+    const focusAdvice = {
+      work: {
+        E: "适合多用讨论和同步，把思考外显出来。",
+        I: "适合先独立整理，再带着结论参与讨论。",
+        S: "你适合先落到步骤和边界，再推进执行。",
+        N: "你适合负责方向、概念和方案前瞻性。",
+        T: "你在判断优先级和拆解问题时会更有优势。",
+        F: "你在跨团队协同和照顾用户体验时更有优势。",
+        J: "你适合搭节奏、定里程碑、做推进闭环。",
+        P: "你适合在不确定项目里快速试错和迭代。"
+      },
+      team: {
+        E: "在团队里你可以主动带起讨论氛围。",
+        I: "在团队里你更适合输出深思后的关键判断。",
+        S: "你能帮助团队守住事实和执行细节。",
+        N: "你能帮助团队看到更远的方向和潜在机会。",
+        T: "你能推动团队回到标准和目标本身。",
+        F: "你能帮助团队维持信任和共识。",
+        J: "你能让合作更有节奏和可预期。",
+        P: "你能在变化里保留弹性和创意空间。"
+      },
+      communication: {
+        E: "沟通时先说出来再修正，会比憋着更有效。",
+        I: "沟通前先写几条要点，会更符合你的表达方式。",
+        S: "先给事实和例子，再讲结论，别人更容易跟上。",
+        N: "先给方向和结构，再补细节，别人更容易理解你的想法。",
+        T: "你可以更直接地解释判断标准和取舍逻辑。",
+        F: "你可以更自然地照顾对方感受和接受度。",
+        J: "把时间点、边界和下一步说清楚会很有帮助。",
+        P: "给对方几个备选路径，比一次定死更适合你。"
+      }
+    };
+
+    function renderResult(type, summaryTitle, details, advice, bars) {
+      result.innerHTML = `
+        <div class="result-panel__header">
+          <div>
+            <p class="eyebrow">你的倾向结果</p>
+            <h2>${type} <span class="result-subtitle">${summaryTitle}</span></h2>
+          </div>
+          <span class="status-badge status-badge--live">已生成</span>
+        </div>
+        <div class="metric-strip metric-strip--compact">
+          ${bars
+            .map(
+              (item) => `
+                <div class="metric-card">
+                  <span>${item.label}</span>
+                  <strong>${item.winner} ${item.percent}%</strong>
+                  <p>${item.caption}</p>
+                </div>
+              `
+            )
+            .join("")}
+        </div>
+        <div class="result-copy">
+          <h3>维度解读</h3>
+          <ul class="app-points">
+            ${details.map((item) => `<li>${item}</li>`).join("")}
+          </ul>
+          <h3>实用建议</h3>
+          <ul class="app-points">
+            ${advice.map((item) => `<li>${item}</li>`).join("")}
+          </ul>
+        </div>
+      `;
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const groups = [...form.querySelectorAll("[data-axis]")];
+      const scores = { EI: 0, SN: 0, TF: 0, JP: 0 };
+      const counts = { EI: 0, SN: 0, TF: 0, JP: 0 };
+      const missing = [];
+
+      groups.forEach((group, index) => {
+        const axis = group.dataset.axis;
+        const checked = group.querySelector('input[type="radio"]:checked');
+
+        if (!checked) {
+          missing.push(index + 1);
+          return;
+        }
+
+        scores[axis] += Number(checked.value);
+        counts[axis] += 2;
+      });
+
+      if (missing.length > 0) {
+        result.innerHTML = `<p class="result-warning">还有题目未完成：第 ${missing.join("、")} 题。</p>`;
+        return;
+      }
+
+      const formData = new FormData(form);
+      const focus = formData.get("focus");
+      const resultLetters = [];
+      const details = [];
+      const advice = [];
+      const bars = [];
+
+      Object.entries(axes).forEach(([axis, config]) => {
+        const score = scores[axis];
+        const max = counts[axis] || 1;
+        const letter = score > 0 ? config.right : config.left;
+        const otherLetter = score > 0 ? config.left : config.right;
+        const percent = Math.round(50 + (Math.abs(score) / max) * 50);
+        const caption =
+          score === 0
+            ? `当前在 ${config.left}/${config.right} 之间比较均衡`
+            : config.explain[letter];
+
+        resultLetters.push(letter);
+        details.push(`${config.label}: ${caption}`);
+        advice.push(focusAdvice[focus][letter]);
+        bars.push({
+          label: `${config.left} / ${config.right}`,
+          winner: score === 0 ? `${config.left}-${config.right}` : letter,
+          percent,
+          caption:
+            score === 0
+              ? `和 ${otherLetter} 的偏好差距不明显`
+              : `相对另一侧的倾向约 ${percent}%`
+        });
+      });
+
+      const type = resultLetters.join("");
+      const summaryTitle = mbtiTitles[type] || "混合型探索者";
+      renderResult(type, summaryTitle, details, advice, bars);
+    });
+
+    form.addEventListener("reset", () => {
+      window.setTimeout(() => {
+        result.innerHTML =
+          '<p class="result-placeholder">完成全部题目后，这里会显示你的类型倾向、维度解释和实用建议。</p>';
+      }, 0);
+    });
+  }
+</script>
